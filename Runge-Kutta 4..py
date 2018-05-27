@@ -1,6 +1,6 @@
 from math import sqrt
 
-"""Define Runge Kutta 4. method"""
+"""Define method of Runge Kutta 4."""
 def RK(f):
     return lambda t, y, dt: (
             lambda dy1: (
