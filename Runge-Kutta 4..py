@@ -27,4 +27,4 @@ while t <= 5:
         print("y(%0.1f)\t= %6.2f " % ( t, y))
 
         """define new values for y(t) and t to begin a new while loop"""
-        t, y = t + dt, y + dy( t, y, dt )
+        y, t = y + dy( t, y, dt ), t + dt
