@@ -17,7 +17,7 @@ def y(t):
     return (y(t))
 
 """define function: y'(t) that applies RK(f)"""
-dy = RK(lambda t, y: y/t)
+dy = RK(lambda t, y: y'(t))
 
 """define values for t0, y0, dt"""
 t, y, dt = 1., 2., 1.
