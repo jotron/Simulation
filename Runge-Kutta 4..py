@@ -3,13 +3,13 @@ from math import sqrt
 """Define method of Runge Kutta 4."""
 def RK(f):
     return lambda t, y, dt: (
-            lambda dy1: (
-            lambda dy2: (
-            lambda dy3: (
-            lambda dy4: (dy1 + 2*(dy2 + dy3) + dy4)/6
-                        )( dt * f( t + dt  , y + dy3   ) )
-	                    )( dt * f( t + dt/2, y + dy2/2 ) )
-	                    )( dt * f( t + dt/2, y + dy1/2 ) )
+            lambda dy: (
+            lambda dy: (
+            lambda dy: (
+            lambda dy: (dy + 2*(dy + dy) + dy)/6
+                        )( dt * f( t + dt  , y + dy   ) )
+	                    )( dt * f( t + dt/2, y + dy/2 ) )
+	                    )( dt * f( t + dt/2, y + dy/2 ) )
 	                    )( dt * f( t, y ) )
 
 """define function: y(t)"""
