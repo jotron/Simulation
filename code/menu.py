@@ -1,42 +1,10 @@
 import pygame as p
-import time
-
-clock = p.time.Clock()
-SIZE = WIDTH, HEIGHT = 800, 800
-
-black = (0, 0, 0)
-grey = (50, 131, 134)
-white = (255, 255, 255)
-white_cyan = (255, 250, 240)
-red = (200, 0, 0)
-green = (0, 200, 0)
-yellow = (255, 193, 37)
-bright_yellow = (255, 215, 0)
-bright_red = (255, 0, 0)
-bright_green = (0, 255, 0)
-yellow_launch = (245,222,179)
-bright_yellow_launch = (255,235,205)
-lime = (0, 255, 0)
-grey = (30,30,30)
-
-smallText = p.font.Font('freesansbold.ttf', 20)
-mediumText = p.font.Font('freesansbold.ttf', 33)
-largeText = p.font.Font('freesansbold.ttf', 40)
-
-
-c_i = p.Color('lightskyblue3')
-c_a = p.Color('dodgerblue2')
-FONT = p.font.Font(None, 32)
-
-MainMenuimg = p.image.load('MainMenu.jpg')
-settingimg = p.image.load('setting.jpg')
-MenuParameterimg = p.image.load('ConfMenu.jpg')
-screen = p.display.set_mode((WIDTH, HEIGHT))
+import settings as s
 
 
 # Font of text
 def text_objects(text, font):
-    textSurface = font.render(text, True, white)
+    textSurface = font.render(text, True, s.white)
     return textSurface, textSurface.get_rect()
 
 # draw a rectangle around the text and with the text
@@ -214,7 +182,3 @@ def main():
                 quit()
 
         p.display.update()"""
-
-game_intro()
-p.quit()
-quit()
