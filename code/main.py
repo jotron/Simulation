@@ -186,7 +186,14 @@ def main():
     input_box4 = InputBox(400, 280, 140, 32)
     input_box5 = InputBox(400, 340, 140, 32)
     input_boxes = [input_box1, input_box2, input_box3, input_box4, input_box5]
-
+    screen.blit(settingimg, (0,0))
+    message_screen('Parameters',mediumText, WIDTH/2, 30)
+    message_screen('Mass of Space Ship',smallText, 245, 115)
+    message_screen('Acceleration of Space Ship',smallText, 195, 175)
+    message_screen('Mass of Sun',smallText, 285, 235)
+    message_screen('Mass of Earth',smallText, 280, 295)
+    message_screen('Constant of Gravitation',smallText, 220, 355)
+    
     enter = False
 
     while not enter:
@@ -198,13 +205,6 @@ def main():
         for box in input_boxes:
             box.update()
 
-        screen.blit(settingimg, (0,0))
-        message_screen('Parameters',mediumText, WIDTH/2, 30)
-        message_screen('Mass of Space Ship',smallText, 245, 115)
-        message_screen('Acceleration of Space Ship',smallText, 195, 175)
-        message_screen('Mass of Sun',smallText, 285, 235)
-        message_screen('Mass of Earth',smallText, 280, 295)
-        message_screen('Constant of Gravitation',smallText, 220, 355)
         for box in input_boxes:
             box.draw(screen)
 
