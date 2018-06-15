@@ -209,7 +209,7 @@ def main():
             box.draw(screen)
 
         p.display.flip()
-        clock.tick(27)
+        clock.tick(60)
 
 # Space_object Constants
 STARTPOS = [v_center,                             # Sun
