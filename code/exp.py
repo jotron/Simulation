@@ -28,5 +28,8 @@ class Orb:
 
 
 import numpy as np
-a = np.array([2, 1, 0, 7, 6, 5, 4, 3])
-print(np.roll(a, -3))
+a = np.array([[4, 5], [6, 7]])
+a[0] += np.array([56, 45])
+print(a)
+
+list = [1, 10, 100, 1000, 5000]

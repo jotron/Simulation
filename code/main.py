@@ -6,12 +6,11 @@ import numpy as np
 import sys
 
 # General Settings
-INDEX = 0
 SIZE = WIDTH, HEIGHT = 800, 800
 TIME_STEP = 3 * 24 * 3600 * 2
-MINI_STEPS = 50
+MINI_STEPS = 100
 FRAMERATE = 30
-TRACELENGTH = 5
+TRACELENGTH = 300
 V_SIZE = V_WIDTH, V_HEIGHT = 3.5e9, 3.5e9  # Total size of System = 3e9km
 v_center = np.array([V_WIDTH/2, V_HEIGHT/2])
 
@@ -22,7 +21,7 @@ STARTPOS = [v_center,                             # Sun
             v_center + np.array([0, 81.9e7]),     # Jupyter
             v_center + np.array([0, 15.1857e8])]  # Saturn
 STARTVEL = [np.array([0, 0]),      # Sun
-            np.array([29.29, 0]),  # Earth
+            np.array([29.29, 0]),  # Earth 29.29
             np.array([21.97, 0]),  # Mars
             np.array([12.45, 0]),  # Jupyter
             np.array([9.11, 0])]    # Saturn
@@ -61,9 +60,8 @@ class Space_object:
 
         self.trace_color = trace_color
         self.trace_true = np.tile(pos, (TRACELENGTH, 1))
-        self.trace_fake = np.tile(INDEX, (TRACELENGTH, 1))
-        self.trace_counter = 0
         self.trace_index = 0
+        self.trace_counter = 0
 
         self.space_objects.append(self)
 
@@ -74,37 +72,19 @@ class Space_object:
 
     # Draw Space Object
     def draw(self):
-        #  every half second store trace
-        """if (self.trace_counter >= 0):
-            self.trace_counter = 0
-
-            # loop through trace array
-            if (self.trace_index >= TRACELENGTH):
-                self.trace_index = 0
-
-            self.trace[self.trace_index] = self.pos
-            self.trace_index += 1
-
-        self.trace_counter += 1"""
-        # fake and true
-        if (self.trace_index >= TRACELENGTH):
-            self.trace_index = 0
-        self.trace_fake[self.trace_index] = INDEX
-        self.trace_true[self.trace_index] = self.pos
+        # store position
+        self.trace_true[self.trace_index % TRACELENGTH] = self.pos
         self.trace_index += 1
 
-        #  draw shape
+
+        # draw shape
         p.draw.circle(self.screen, self.color,
                       self.convert(self.pos).tolist(), self.radius)
 
         # draw trace
-        rolled_trace = np.roll(self.trace_true, -self.trace_index)
+        rolled_trace = np.roll(self.trace_true, -self.trace_index, 0)
         trace_list = self.convert(rolled_trace).tolist()
-        some_list = np.array([[15.21e7, 15.21e7], [15.21e7, 30.21e7], [30.21e7, 30.21e7]])
-        some_tuple_list = self.convert(some_list).tolist()
-        if (self.mass == 5.974e24):
-            print(rolled_trace)
-            p.draw.aalines(self.screen, self.trace_color, False, trace_list, 1)
+        p.draw.aalines(self.screen, self.trace_color, False, trace_list, 1)
 
 
 
@@ -207,7 +187,6 @@ while 1:
     # Do Gravition Stuff
     Space_object.run_all()
     Space_object.draw_all()
-    INDEX += 1
 
     p.display.update()
     clock.tick(FRAMERATE)
