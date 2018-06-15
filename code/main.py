@@ -7,11 +7,14 @@ import sys
 
 # General Settings
 SIZE = WIDTH, HEIGHT = 800, 800
-TIME_STEP = 3 * 24 * 3600 * 2
-MINI_STEPS = 100
+TIME_STEP = 3600 * 100
 FRAMERATE = 30
-TRACELENGTH = 300
+TRACE_TIME = 365 * 24 * 3600  # TIME_LENGTH of TRACE
+TRACE_LENGTH = 100
 V_SIZE = V_WIDTH, V_HEIGHT = 3.5e9, 3.5e9  # Total size of System = 3e9km
+SPEED_FACTORS = [1, 10000, 1000000, 5000000, 10000000,
+                 20000000, 50000000, 100000000]
+SPEED_INDEX = 1
 v_center = np.array([V_WIDTH/2, V_HEIGHT/2])
 
 # Space_object Constants
@@ -34,18 +37,22 @@ COLOR = [(255, 255, 0),    # Sun = Yellow
 RADIUS = [10, 5, 3, 8, 9]
 
 # Init GAME
-p.init()  # Pygame initialisieren.
+p.init()
+
+# Set Pygame setting
 p.display.set_caption('Simulation')
 screen = p.display.set_mode(SIZE)  # Fenstergrösse festlegen
 clock = p.time.Clock()  # Brauchen wir zur Framerate-Kontrolle
-
 # background_image
 background_image = p.image.load("assets/background.jpg").convert()
+MAINFONT = p.font.SysFont("monospace", 25)
 
 
 # Class for all objects with mass
 class Space_object:
     space_objects = []
+    step_accumulation = 0.0
+    trace_accumulation = 0.0
 
     def __init__(self, screen, pos=np.zeros(2), radius=10, mass=5.9*10**24,
                  vel=np.zeros(2),
@@ -59,9 +66,8 @@ class Space_object:
         self.vel = vel
 
         self.trace_color = trace_color
-        self.trace_true = np.tile(pos, (TRACELENGTH, 1))
+        self.trace_true = np.tile(pos, (TRACE_LENGTH, 1))
         self.trace_index = 0
-        self.trace_counter = 0
 
         self.space_objects.append(self)
 
@@ -71,11 +77,13 @@ class Space_object:
         self.vel = vel
 
     # Draw Space Object
-    def draw(self):
-        # store position
-        self.trace_true[self.trace_index % TRACELENGTH] = self.pos
-        self.trace_index += 1
-
+    def draw(self, trace_accumulation):
+        # store position for one year
+        trace_step = (365*24*3600) / TRACE_LENGTH
+        for i in range(int(trace_accumulation / trace_step)):
+            print("trace")
+            self.trace_true[self.trace_index % TRACE_LENGTH] = self.pos
+            self.trace_index += 1
 
         # draw shape
         p.draw.circle(self.screen, self.color,
@@ -85,9 +93,6 @@ class Space_object:
         rolled_trace = np.roll(self.trace_true, -self.trace_index, 0)
         trace_list = self.convert(rolled_trace).tolist()
         p.draw.aalines(self.screen, self.trace_color, False, trace_list, 1)
-
-
-
 
     # Get next position and velocity
     @classmethod
@@ -139,16 +144,19 @@ class Space_object:
     def run_all(cls):
         # Do multiple small steps per FRAME
         # Set DELTAT smaller
-        dt = TIME_STEP / MINI_STEPS
+        dt = TIME_STEP
         # set AWP to temporarily store state
         state = np.array([[space_object1.pos for space_object1
                          in cls.space_objects],
                          [space_object1.vel for space_object1
                          in cls.space_objects]])
-        # Loop for all MINI_STEPS
-        for i in range(MINI_STEPS):
+        # Loop for all MINI_STEPS, if ministep smaller 0 save for later
+        mini_steps = SPEED_FACTORS[SPEED_INDEX] / (FRAMERATE * TIME_STEP)
+        cls.step_accumulation += mini_steps
+        for i in range(int(cls.step_accumulation)):
             # Runge Kutta with physics
             state = Space_object.get_next_state(state, dt)
+        cls.step_accumulation -= int(cls.step_accumulation)
 
         # Apply to all ojects as tupple
         for i, space_object1 in enumerate(cls.space_objects):
@@ -156,18 +164,26 @@ class Space_object:
             next_vel = state[1][i]
             space_object1.change_state(next_pos, next_vel)
 
+        # set trace accumulation
+        print(cls.trace_accumulation)
+        cls.trace_accumulation += SPEED_FACTORS[SPEED_INDEX] / FRAMERATE
+
     # Draw all space_objects
     @classmethod
     def draw_all(cls):
         for space_object1 in cls.space_objects:
-            space_object1.draw()
+            space_object1.draw(cls.trace_accumulation)
+
+        # reset trace_accumulation
+        trace_step = (365*24*3600) / TRACE_LENGTH
+        cls.trace_accumulation = cls.trace_accumulation % trace_step
 
     # Draw all space_objects
     @staticmethod
     def convert(pos):
         tmp_pos = pos / V_SIZE * SIZE
         #  print(pos, tmp_pos, tuple(tmp_pos.astype(int)))
-        return tmp_pos.astype(int)
+        return tmp_pos.round().astype(int)
 
 
 # Initialize class instances
@@ -178,8 +194,15 @@ for i in range(len(STARTPOS)):
 # ANIMATION LOOP #
 while 1:
     for event in p.event.get():
+        # QUIT
         if event.type == p.QUIT:
             sys.exit()
+        # SET SPEED
+        if event.type == p.KEYUP:
+            if (event.key == p.K_UP and SPEED_INDEX < len(SPEED_FACTORS) - 1):
+                SPEED_INDEX += 1
+            if (event.key == p.K_DOWN and SPEED_INDEX >= 1):
+                SPEED_INDEX -= 1
 
     # Nice Background
     screen.blit(background_image, [0, 0])
@@ -187,6 +210,10 @@ while 1:
     # Do Gravition Stuff
     Space_object.run_all()
     Space_object.draw_all()
+
+    # Display current SPEED
+    SPEEDLABEL = MAINFONT.render(f"X {SPEED_FACTORS[SPEED_INDEX]}", 1, (0, 255, 255))
+    screen.blit(SPEEDLABEL, (680, 20))
 
     p.display.update()
     clock.tick(FRAMERATE)

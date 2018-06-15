@@ -28,8 +28,5 @@ class Orb:
 
 
 import numpy as np
-a = np.array([[4, 5], [6, 7]])
-a[0] += np.array([56, 45])
-print(a)
-
-list = [1, 10, 100, 1000, 5000]
+a = np.array([[400.999, 500.9999], [22.9999, 25.9]])
+print(a.round().astype(int))
