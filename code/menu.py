@@ -1,6 +1,23 @@
 import pygame as p
 import settings as s
 
+p.init()
+
+# SCHRIFTARTEN
+smallText = p.font.Font('freesansbold.ttf', 25)
+mediumText = p.font.Font('freesansbold.ttf', 43)
+largeText = p.font.Font('freesansbold.ttf', 50)
+FONT = p.font.Font(None, 32)
+
+# PYGAME FARBEN
+c_i = p.Color('lightskyblue3')
+c_a = p.Color('dodgerblue2')
+FONT = p.font.Font(None, 32)
+
+# BILDER
+MainMenuimg = p.image.load('assets/MainMenu.jpg')
+settingimg = p.image.load('assets/setting.jpg')
+MenuParameterimg = p.image.load('assets/ConfMenu.jpg')
 
 # Font of text
 def text_objects(text, font):
@@ -8,12 +25,12 @@ def text_objects(text, font):
     return textSurface, textSurface.get_rect()
 
 # draw a rectangle around the text and with the text
-def message_screen(text, text_size ,widht, height):
+def message_screen(text, text_size ,widht, height, pygame):
      TextSurf, TextRect = text_objects(text, text_size)
      TextRect.center = ((widht), (height))
      screen.blit(TextSurf, TextRect)
 
-     p.display.update()
+     pygame.display.update()
 
 # Define an action if a button is pressed
 def button(message, x, y, w, h, ic, ac, action=None): #x,y = coord. w=width, h= height, ic=inactive color ac=active color

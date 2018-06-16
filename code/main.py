@@ -6,31 +6,19 @@ import settings as s
 import menu as menu
 
 # PYGAME INITIALISIEREN UND EINSTELLEN
-p.init()
+pygame = p.init()
 p.display.set_caption('Simulation')
 screen = p.display.set_mode(s.SIZE)  # Fenstergrösse festlegen
 clock = p.time.Clock()  # Brauchen wir zur Framerate-Kontrolle
 
-# SCHRIFTARTEN
-smallText = p.font.Font('freesansbold.ttf', 25)
-mediumText = p.font.Font('freesansbold.ttf', 43)
-largeText = p.font.Font('freesansbold.ttf', 50)
-FONT = p.font.Font(None, 32)
-
-# PYGAME FARBEN
-c_i = p.Color('lightskyblue3')
-c_a = p.Color('dodgerblue2')
-FONT = p.font.Font(None, 32)
-
-# BILDER
-MainMenuimg = p.image.load('assets/MainMenu.jpg')
-settingimg = p.image.load('assets/setting.jpg')
-MenuParameterimg = p.image.load('assets/ConfMenu.jpg')
+# background_image
+background_image = p.image.load("assets/background.jpg").convert()
+MAINFONT = p.font.SysFont("monospace", 25)
 
 
 def message_screen(text, text_size, widht, height):
     TextSurf, TextRect = menu.text_objects(text, text_size)
-    TextRect.center = ((widht), (height))  # creer rectangle autour texte
+    TextRect.center = ((widht), (height))
     screen.blit(TextSurf, TextRect)
 
     p.display.update()
@@ -67,7 +55,7 @@ def button(message, x, y, w, h, ic, ac, action=None):  # x,y = coord. w=width, h
     else:
         p.draw.rect(screen, ic, (x, y, w, h))
 
-    textSurf, textRect = menu.text_objects(message, smallText)
+    textSurf, textRect = menu.text_objects(message, menu.smallText)
     textRect.center = ((x+(w/2)), ((y+(h/2))))
     screen.blit(textSurf, textRect)
 
@@ -82,8 +70,8 @@ def game_intro():
                 p.quit()
                 quit()
 
-        screen.blit(MainMenuimg, (0, 0))
-        TextSurf, TextRect = menu.text_objects('Main Menu', largeText)
+        screen.blit(menu.MainMenuimg, (0, 0))
+        TextSurf, TextRect = menu.text_objects('Main Menu', menu.largeText)
         TextRect.center = ((s.WIDTH/2), (s.HEIGHT/2))
         screen.blit(TextSurf, TextRect)
 
@@ -116,9 +104,9 @@ class InputBox:
 
     def __init__(self, x, y, w, h, text=''):
         self.rect = p.Rect(x, y, w, h)
-        self.color = c_i
+        self.color = menu.c_i
         self.text = text  # text input
-        self.txt_surface = FONT.render(text, True, self.color)
+        self.txt_surface = menu.FONT.render(text, True, self.color)
         self.active = False
 
     def write_input(self, event):
@@ -130,7 +118,7 @@ class InputBox:
             else:
                 self.active = False
             # Change the current color of the input box.
-            self.color = c_a if self.active else c_a
+            self.color = menu.c_a if self.active else menu.c_a
             # Action that occur if a key is pressed
         if event.type == p.KEYDOWN:
             if self.active:
@@ -143,7 +131,7 @@ class InputBox:
                 else:
                     self.text += event.unicode
                 # Re-render the text.
-                self.txt_surface = FONT.render(self.text, True, self.color)
+                self.txt_surface = menu.FONT.render(self.text, True, self.color)
                 # convert text_input to float float(text)
 
     def update(self):
@@ -157,8 +145,8 @@ class InputBox:
         # Blit the rect.
         p.draw.rect(screen, self.color, self.rect, 2)
         # Blit Default_Setting button
-        button('Default Setting', WIDTH/2 - 220, 500, 200, 50, s.yellow_launch, s.bright_yellow_launch, 'Default')
-        button('Return', HEIGHT/2 + 40, 500, 200, 50, s.yellow_launch, s.bright_yellow_launch, 'return')
+        button('Default Setting', s.WIDTH/2 - 220, 500, 200, 50, s.yellow_launch, s.bright_yellow_launch, 'Default')
+        button('Return', s.HEIGHT/2 + 40, 500, 200, 50, s.yellow_launch, s.bright_yellow_launch, 'return')
 
 
 def main():
@@ -169,13 +157,13 @@ def main():
     input_box4 = InputBox(400, 280, 140, 32)
     input_box5 = InputBox(400, 340, 140, 32)
     input_boxes = [input_box1, input_box2, input_box3, input_box4, input_box5]
-    screen.blit(settingimg, (0, 0))
-    message_screen('Parameters', mediumText, WIDTH/2, 30)
-    message_screen('Mass of Space Ship', smallText, 245, 115)
-    message_screen('Acceleration of Space Ship', smallText, 195, 175)
-    message_screen('Mass of Sun', smallText, 285, 235)
-    message_screen('Mass of Earth', smallText, 280, 295)
-    message_screen('Constant of Gravitation', smallText, 220, 355)
+    screen.blit(menu.settingimg, (0, 0))
+    message_screen('Parameters', menu.mediumText, s.WIDTH/2, 30)
+    message_screen('Mass of Space Ship', menu.smallText, 245, 115)
+    message_screen('Acceleration of Space Ship', menu.smallText, 195, 175)
+    message_screen('Mass of Sun', menu.smallText, 285, 235)
+    message_screen('Mass of Earth', menu.smallText, 280, 295)
+    message_screen('Constant of Gravitation', menu.smallText, 220, 355)
 
     enter = False
 
@@ -195,51 +183,18 @@ def main():
         clock.tick(60)
 
 
-# Space_object Constants
-STARTPOS = [s.v_center,                             # Sun
-            s.v_center + np.array([0, 15.21e7]),    # Earth
-            s.v_center + np.array([0, 24.99e7]),    # Mars
-            s.v_center + np.array([0, 81.9e7]),     # Jupyter
-            s.v_center + np.array([0, 15.1857e8])]  # Saturn
-STARTVEL = [np.array([0, 0]),      # Sun
-            np.array([29.29, 0]),  # Earth 29.29
-            np.array([21.97, 0]),  # Mars
-            np.array([12.45, 0]),  # Jupyter
-            np.array([9.11, 0])]    # Saturn
-MASS = [2e30, 5.974e24, 6.419e23, 1.9e27, 5.685e26]
-COLOR = [(255, 255, 0),    # Sun = Yellow
-         (0, 0, 255),      # Earth = Blue
-         (255, 0, 0),      # Mars = Red
-         (153, 102, 51),   # Jupyter = Brown
-         (140, 140, 140)]  # Saturn = Grey
-RADIUS = [10, 5, 3, 8, 9]
-
-# Init GAME
-p.init()
-
-# Set Pygame setting
-p.display.set_caption('Simulation')
-screen = p.display.set_mode(s.SIZE)  # Fenstergrösse festlegen
-clock = p.time.Clock()  # Brauchen wir zur Framerate-Kontrolle
-# background_image
-background_image = p.image.load("assets/background.jpg").convert()
-MAINFONT = p.font.SysFont("monospace", 25)
-
-
 # Class for all objects with mass
 class Space_object:
     space_objects = []
     step_accumulation = 0.0
     trace_accumulation = 0.0
 
-    def __init__(self, screen, pos=np.zeros(2), radius=10, mass=5.9*10**24,
+    def __init__(self, screen, pos, img, mass=5.9*10**24,
                  vel=np.zeros(2),
-                 color=(255, 255, 255),
                  trace_color=(180, 180, 180)):
         self.screen = screen
         self.pos = pos
-        self.color = color
-        self.radius = radius
+        self.img = img
         self.mass = mass
         self.vel = vel
 
@@ -262,14 +217,14 @@ class Space_object:
             self.trace_true[self.trace_index % s.TRACE_LENGTH] = self.pos
             self.trace_index += 1
 
-        # draw shape
-        p.draw.circle(self.screen, self.color,
-                      self.convert(self.pos).tolist(), self.radius)
-
         # draw trace
         rolled_trace = np.roll(self.trace_true, -self.trace_index, 0)
         trace_list = self.convert(rolled_trace).tolist()
         p.draw.aalines(self.screen, self.trace_color, False, trace_list, 1)
+
+        # draw shape
+        self.screen.blit(self.img,
+                         self.img.get_rect(center=self.convert(self.pos).tolist()))
 
     # Get next position and velocity
     @classmethod
@@ -383,7 +338,8 @@ def animation_loop():
         Space_object.run_all()
         Space_object.draw_all()
 
-        SPEEDLABEL = MAINFONT.render(f"X {s.SPEED_FACTORS[s.SPEED_INDEX]}", 1, (0, 255, 255))
+        SPEEDLABEL = MAINFONT.render(f"X {s.SPEED_FACTORS[s.SPEED_INDEX]}",
+                                     1, (0, 255, 255))
         screen.blit(SPEEDLABEL, (680, 20))
 
         p.display.update()
@@ -392,8 +348,9 @@ def animation_loop():
 
 # Initialize class instances
 def init_class():
-    for i in range(len(STARTPOS)):
-        Space_object(screen, STARTPOS[i], RADIUS[i], MASS[i], STARTVEL[i], COLOR[i])
+    for i in range(len(s.STARTPOS)):
+        Space_object(screen, s.STARTPOS[i], s.OBJECT_IMG[i], s.MASS[i],
+                     s.STARTVEL[i])
     animation_loop()
 
 

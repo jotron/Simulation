@@ -1,4 +1,6 @@
 import numpy as np
+import pygame as p
+p.init()
 
 # VISUAL
 SIZE = WIDTH, HEIGHT = 800, 800
@@ -14,6 +16,24 @@ SPEED_FACTORS = [1, 10000, 1000000, 5000000, 10000000,
                  20000000, 50000000, 100000000]
 SPEED_INDEX = 1
 v_center = np.array([V_WIDTH/2, V_HEIGHT/2])
+
+# Space_object Constants
+STARTPOS = [v_center,                             # Sun
+            v_center + np.array([0, 15.21e7]),    # Earth
+            v_center + np.array([0, 24.99e7]),    # Mars
+            v_center + np.array([0, 81.9e7]),     # Jupyter
+            v_center + np.array([0, 15.1857e8])]  # Saturn
+STARTVEL = [np.array([0, 0]),      # Sun
+            np.array([29.29, 0]),  # Earth 29.29
+            np.array([21.97, 0]),  # Mars
+            np.array([12.45, 0]),  # Jupyter
+            np.array([9.11, 0])]    # Saturn
+MASS = [2e30, 5.974e24, 6.419e23, 1.9e27, 5.685e26]
+OBJECT_IMG = [p.image.load('assets/sun.png'),
+              p.image.load('assets/earth.png'),
+              p.image.load('assets/mars.png'),
+              p.image.load('assets/jupiter.png'),
+              p.image.load('assets/saturn.png')]
 
 # COLORS
 black = (0, 0, 0)
