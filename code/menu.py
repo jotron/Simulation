@@ -1,94 +1,92 @@
-import pygame as p
 import settings as s
+import pygame
+pygame.init()
 
-p.init()
+p = None
+screen = None
+clock = None
 
 # SCHRIFTARTEN
-smallText = p.font.Font('freesansbold.ttf', 25)
-mediumText = p.font.Font('freesansbold.ttf', 43)
-largeText = p.font.Font('freesansbold.ttf', 50)
-FONT = p.font.Font(None, 32)
+smallText = pygame.font.Font('freesansbold.ttf', 25)
+mediumText = pygame.font.Font('freesansbold.ttf', 43)
+largeText = pygame.font.Font('freesansbold.ttf', 50)
+FONT = pygame.font.Font(None, 32)
 
 # PYGAME FARBEN
-c_i = p.Color('lightskyblue3')
-c_a = p.Color('dodgerblue2')
-FONT = p.font.Font(None, 32)
+c_i = pygame.Color('lightskyblue3')
+c_a = pygame.Color('dodgerblue2')
+black = (0, 0, 0)
+grey = (50, 131, 134)
+white = (255, 255, 255)
+white_cyan = (255, 250, 240)
+red = (200, 0, 0)
+green = (0, 200, 0)
+yellow = (255, 193, 37)
+bright_yellow = (255, 215, 0)
+bright_red = (255, 0, 0)
+bright_green = (0, 255, 0)
+yellow_launch = (245, 222, 179)
+bright_yellow_launch = (255, 235, 205)
+lime = (0, 255, 0)
+grey = (30, 30, 30)
 
 # BILDER
-MainMenuimg = p.image.load('assets/MainMenu.jpg')
-settingimg = p.image.load('assets/setting.jpg')
-MenuParameterimg = p.image.load('assets/ConfMenu.jpg')
+MainMenuimg = pygame.image.load('assets/MainMenu.jpg')
+settingimg = pygame.image.load('assets/setting.jpg')
+MenuParameterimg = pygame.image.load('assets/ConfMenu.jpg')
+
 
 # Font of text
 def text_objects(text, font):
-    textSurface = font.render(text, True, s.white)
+    textSurface = font.render(text, True, white)
     return textSurface, textSurface.get_rect()
 
-# draw a rectangle around the text and with the text
-def message_screen(text, text_size ,widht, height, pygame):
-     TextSurf, TextRect = text_objects(text, text_size)
-     TextRect.center = ((widht), (height))
-     screen.blit(TextSurf, TextRect)
 
-     pygame.display.update()
+# draw a rectangle around the text and with the text
+def message_screen(text, text_size, widht, height):
+    TextSurf, TextRect = text_objects(text, text_size)
+    TextRect.center = ((widht), (height))
+    screen.blit(TextSurf, TextRect)
+
+    p.display.update()
+
 
 # Define an action if a button is pressed
-def button(message, x, y, w, h, ic, ac, action=None): #x,y = coord. w=width, h= height, ic=inactive color ac=active color
+def button(message, x, y, w, h, ic, ac, action=None):  # x,y = coord. w=width, h= height, ic=inactive color ac=active color
     mouse = p.mouse.get_pos()
     click = p.mouse.get_pressed()
-                                                       # mouse [0] = x-coordinate of the mouse
-    if x + w > mouse [0] > x and y + h > mouse[1] > y: # Delimit the button field
-        p.draw.rect(screen, ac, (x, y, w, h)) #create an active button
-        if click[0] == 1 and action != None: #click[0] = left click
+    # mouse [0] = x coord of mouse because python recognise mouse coordinates
+    if x + w > mouse[0] > x and y + h > mouse[1] > y:  # if x coordinate (button) + width (button) delimite boutton
+        p.draw.rect(screen, ac, (x, y, w, h))  # create active button
+        if click[0] == 1 and action is not None:  # click[0] = left click
             if action == "play":
                 parameter_loop()
+            elif action == "launch":
+                init_simulation()
             elif action == "quit":
                 p.quit()
                 quit()
-            #elif action == "launch":
-             #   init_class() # it's a class in main()
             elif action == "setting":
                 main()
             elif action == "return":
                 game_intro()
             elif action == "Default":
-                msonde_t0 = 3038 * 10**3 # Take-off weight of the probe
-                msonde_t1 = msonde_t0 - 2286 * 10**3 # After 150sec
+                msonde_t0 = 3038 * 10**3
+                msonde_t1 = msonde_t0 - 2286 * 10**3  # After 150sec
                 msonde_t2 = msonde_t1 - 464 * 10**3   # After 360sec
                 msonde_t3 = msonde_t2 - 114 * 10**3   # After 500sec   source(nasa.wikibis.com)
                 msun = 1.989 * 10**30
                 mearth = 5.972 * 10**24
                 G = 6.67234 * 10**(-11)
-
                 parameter_loop()
 
+    else:
+        p.draw.rect(screen, ic, (x, y, w, h))
 
-        else:
-            p.draw.rect(screen, ic, (x, y, w, h))
-            textSurf, textRect = text_objects(message, smallText)
-            textRect.center = ( (x+(w/2)), ((y+(h/2))) )
-            screen.blit(textSurf, textRect)
+    textSurf, textRect = text_objects(message, smallText)
+    textRect.center = ((x+(w/2)), ((y+(h/2))))
+    screen.blit(textSurf, textRect)
 
-def game_intro():
-
-    intro = True
-
-    while intro:
-        for event in p.event.get():
-            if event.type == p.QUIT:
-                p.quit()
-                quit()
-
-        screen.blit(MainMenuimg, (0,0))
-        TextSurf, TextRect = text_objects('Main Menu', largeText)
-        TextRect.center = ((WIDTH/2), (HEIGHT/2))
-        screen.blit(TextSurf, TextRect)
-
-        button('setting', 250, 460, 100, 50, yellow, bright_yellow, 'setting')
-        button('start', 100, 460, 100, 50, green, bright_green, 'play')
-        button('quit', 400, 460, 100, 50, red, bright_red, 'quit')
-
-        p.display.update()
 
 def parameter_loop():
 
@@ -102,17 +100,18 @@ def parameter_loop():
                 quit()
 
         screen.fill(grey)
-        button('Auto Launch', WIDTH/2 - 100, HEIGHT/2 -100, 200, 50, green, bright_green, 'launch')
-        button('Manual Launch', WIDTH/2 - 100 , HEIGHT/2, 200, 50, green, bright_green)
+        button('Auto Launch', s.WIDTH/2 - 100, s.HEIGHT/2 -100, 200, 50, green, bright_green, 'launch')
+        button('Manual Launch', s.WIDTH/2 - 100, s.HEIGHT/2, 200, 50, green, bright_green)
 
         p.display.update()
+
 
 class InputBox:
 
     def __init__(self, x, y, w, h, text=''):
         self.rect = p.Rect(x, y, w, h)
         self.color = c_i
-        self.text = text  #text input
+        self.text = text  # text input
         self.txt_surface = FONT.render(text, True, self.color)
         self.active = False
 
@@ -140,6 +139,7 @@ class InputBox:
                 # Re-render the text.
                 self.txt_surface = FONT.render(self.text, True, self.color)
                 # convert text_input to float float(text)
+
     def update(self):
         # Resize the box if the text is too long.
         width = max(200, self.txt_surface.get_width()+10)
@@ -151,8 +151,9 @@ class InputBox:
         # Blit the rect.
         p.draw.rect(screen, self.color, self.rect, 2)
         # Blit Default_Setting button
-        button('Default Setting', WIDTH/2 - 220, 500, 200, 50, yellow_launch, bright_yellow_launch, 'Default')
-        button('Return', WIDTH/2 + 40, 500, 200, 50, yellow_launch, bright_yellow_launch, 'return')
+        button('Default Setting', s.WIDTH/2 - 220, 500, 200, 50, yellow_launch, bright_yellow_launch, 'Default')
+        button('Return', s.WIDTH/2 + 40, 500, 200, 50, yellow_launch, bright_yellow_launch, 'return')
+
 
 def main():
 
@@ -174,8 +175,8 @@ def main():
         for box in input_boxes:
             box.update()
 
-        screen.blit(settingimg, (0,0))
-        message_screen('Parameters',mediumText, WIDTH/2, 30)
+        screen.blit(settingimg, (0, 0))
+        message_screen('Parameters',mediumText, s.WIDTH/2, 30)
         message_screen('Mass of Space Ship',smallText, 200, 115)
         message_screen('Acceleration of Space Ship',smallText, 160, 175)
         message_screen('Mass of Sun',smallText, 227, 235)
@@ -187,15 +188,37 @@ def main():
         p.display.flip()
         clock.tick(12)
 
-"""def game_loop():
 
-    game_loop = False
+# # # # # # # # # #
+# START FUNCTION  #
+# # # # # # # # # #
+def game_intro(main_p, main_screen, main_clock, main_simulation):
 
-    while not game_loop:
-        for event in p.event.get():
-            if event.type == p.QUIT or event.type == p.KEYDOWN and event.key == p.K_ESCAPE:
-                run = True
+    global p
+    p = main_p
+    global screen
+    screen = main_screen
+    global clock
+    clock = main_clock
+    global init_simulation
+    init_simulation = main_simulation
+
+    intro = True
+
+    while intro:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
                 p.quit()
                 quit()
 
-        p.display.update()"""
+        screen.blit(MainMenuimg, (0, 0))
+        TextSurf, TextRect = text_objects('Main Menu', largeText)
+        TextRect.center = ((s.WIDTH/2), (s.HEIGHT/2))
+        screen.blit(TextSurf, TextRect)
+
+        button('setting', s.WIDTH/3 + 75, 460, 100, 50, yellow, bright_yellow, 'setting')
+        button('start', s.WIDTH/3 - 50, 460, 100, 50, green, bright_green, 'play')
+        button('quit', s.WIDTH/3 + 200, 460, 100, 50, red, bright_red, 'quit')
+
+        pygame.display.update()

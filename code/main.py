@@ -16,173 +16,6 @@ background_image = p.image.load("assets/background.jpg").convert()
 MAINFONT = p.font.SysFont("monospace", 25)
 
 
-def message_screen(text, text_size, widht, height):
-    TextSurf, TextRect = menu.text_objects(text, text_size)
-    TextRect.center = ((widht), (height))
-    screen.blit(TextSurf, TextRect)
-
-    p.display.update()
-
-
-def button(message, x, y, w, h, ic, ac, action=None):  # x,y = coord. w=width, h= height, ic=inactive color ac=active color
-    mouse = p.mouse.get_pos()
-    click = p.mouse.get_pressed()
-    # mouse [0] = x coord of mouse because python recognise mouse coordinates
-    if x + w > mouse[0] > x and y + h > mouse[1] > y:  # if x coordinate (button) + width (button) delimite boutton
-        p.draw.rect(screen, ac, (x, y, w, h))  # create active button
-        if click[0] == 1 and action is not None:  # click[0] = left click
-            if action == "play":
-                parameter_loop()
-            elif action == "launch":
-                init_class()
-            elif action == "quit":
-                p.quit()
-                quit()
-            elif action == "setting":
-                main()
-            elif action == "return":
-                game_intro()
-            elif action == "Default":
-                msonde_t0 = 3038 * 10**3
-                msonde_t1 = msonde_t0 - 2286 * 10**3  # After 150sec
-                msonde_t2 = msonde_t1 - 464 * 10**3   # After 360sec
-                msonde_t3 = msonde_t2 - 114 * 10**3   # After 500sec   source(nasa.wikibis.com)
-                msun = 1.989 * 10**30
-                mearth = 5.972 * 10**24
-                G = 6.67234 * 10**(-11)
-                parameter_loop()
-
-    else:
-        p.draw.rect(screen, ic, (x, y, w, h))
-
-    textSurf, textRect = menu.text_objects(message, menu.smallText)
-    textRect.center = ((x+(w/2)), ((y+(h/2))))
-    screen.blit(textSurf, textRect)
-
-
-def game_intro():
-
-    intro = True
-
-    while intro:
-        for event in p.event.get():
-            if event.type == p.QUIT:
-                p.quit()
-                quit()
-
-        screen.blit(menu.MainMenuimg, (0, 0))
-        TextSurf, TextRect = menu.text_objects('Main Menu', menu.largeText)
-        TextRect.center = ((s.WIDTH/2), (s.HEIGHT/2))
-        screen.blit(TextSurf, TextRect)
-
-        button('setting', s.WIDTH/3 + 75, 460, 100, 50, s.yellow, s.bright_yellow, 'setting')
-        button('start', s.WIDTH/3 - 50, 460, 100, 50, s.green, s.bright_green, 'play')
-        button('quit', s.WIDTH/3 + 200, 460, 100, 50, s.red, s.bright_red, 'quit')
-
-        p.display.update()
-
-
-def parameter_loop():
-
-    para_exit = False
-
-    while not para_exit:
-        for event in p.event.get():
-            if event.type == p.QUIT or event.type == p.KEYDOWN and event.key == p.K_ESCAPE:
-                para_exit = True
-                p.quit()
-                quit()
-
-        screen.fill(s.grey)
-        button('Auto Launch', s.WIDTH/2 - 100, s.HEIGHT/2 -100, 200, 50, s.green, s.bright_green, 'launch')
-        button('Manual Launch', s.WIDTH/2 - 100, s.HEIGHT/2, 200, 50, s.green, s.bright_green)
-
-        p.display.update()
-
-
-class InputBox:
-
-    def __init__(self, x, y, w, h, text=''):
-        self.rect = p.Rect(x, y, w, h)
-        self.color = menu.c_i
-        self.text = text  # text input
-        self.txt_surface = menu.FONT.render(text, True, self.color)
-        self.active = False
-
-    def write_input(self, event):
-        if event.type == p.MOUSEBUTTONDOWN:
-            # If the user clicked on the input_box rect.
-            if self.rect.collidepoint(event.pos):
-                # Toggle the active variable.
-                self.active = not self.active
-            else:
-                self.active = False
-            # Change the current color of the input box.
-            self.color = menu.c_a if self.active else menu.c_a
-            # Action that occur if a key is pressed
-        if event.type == p.KEYDOWN:
-            if self.active:
-                if event.key == p.K_RETURN:
-                    self.color = lime
-                elif event.key == p.K_BACKSPACE:
-                    self.text = self.text[:-1]
-                elif event.key == p.K_COMMA:
-                    self.text = self.text
-                else:
-                    self.text += event.unicode
-                # Re-render the text.
-                self.txt_surface = menu.FONT.render(self.text, True, self.color)
-                # convert text_input to float float(text)
-
-    def update(self):
-        # Resize the box if the text is too long.
-        width = max(200, self.txt_surface.get_width()+8)
-        self.rect.w = width
-
-    def draw(self, screen):
-        # Blit the text.
-        screen.blit(self.txt_surface, (self.rect.x+5, self.rect.y+5))
-        # Blit the rect.
-        p.draw.rect(screen, self.color, self.rect, 2)
-        # Blit Default_Setting button
-        button('Default Setting', s.WIDTH/2 - 220, 500, 200, 50, s.yellow_launch, s.bright_yellow_launch, 'Default')
-        button('Return', s.HEIGHT/2 + 40, 500, 200, 50, s.yellow_launch, s.bright_yellow_launch, 'return')
-
-
-def main():
-
-    input_box1 = InputBox(400, 100, 140, 32)
-    input_box2 = InputBox(400, 160, 140, 32)
-    input_box3 = InputBox(400, 220, 140, 32)
-    input_box4 = InputBox(400, 280, 140, 32)
-    input_box5 = InputBox(400, 340, 140, 32)
-    input_boxes = [input_box1, input_box2, input_box3, input_box4, input_box5]
-    screen.blit(menu.settingimg, (0, 0))
-    message_screen('Parameters', menu.mediumText, s.WIDTH/2, 30)
-    message_screen('Mass of Space Ship', menu.smallText, 245, 115)
-    message_screen('Acceleration of Space Ship', menu.smallText, 195, 175)
-    message_screen('Mass of Sun', menu.smallText, 285, 235)
-    message_screen('Mass of Earth', menu.smallText, 280, 295)
-    message_screen('Constant of Gravitation', menu.smallText, 220, 355)
-
-    enter = False
-
-    while not enter:
-        for event in p.event.get():
-            if event.type == p.QUIT or event.type == p.KEYDOWN and event.key == p.K_ESCAPE:
-                enter = True
-            for box in input_boxes:
-                box.write_input(event)
-        for box in input_boxes:
-            box.update()
-
-        for box in input_boxes:
-            box.draw(screen)
-
-        p.display.flip()
-        clock.tick(60)
-
-
 # Class for all objects with mass
 class Space_object:
     space_objects = []
@@ -347,13 +180,12 @@ def animation_loop():
 
 
 # Initialize class instances
-def init_class():
+def init_simulation():
     for i in range(len(s.STARTPOS)):
         Space_object(screen, s.STARTPOS[i], s.OBJECT_IMG[i], s.MASS[i],
                      s.STARTVEL[i])
     animation_loop()
 
 
-game_intro()
+menu.game_intro(p, screen, clock, init_simulation)
 p.quit()
-quit()
