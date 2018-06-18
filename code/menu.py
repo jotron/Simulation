@@ -55,8 +55,8 @@ def message_screen(text, text_size, widht, height):
 def button(message, x, y, w, h, ic, ac, action=None):  # x,y = coord. w=width, h= height, ic=inactive color ac=active color
     mouse = p.mouse.get_pos()
     click = p.mouse.get_pressed()
-    # mouse [0] = x coord of mouse because python recognise mouse coordinates
-    if x + w > mouse[0] > x and y + h > mouse[1] > y:  # if x coordinate (button) + width (button) delimite boutton
+    # Define if the mouse is in a rectangle's button
+    if x + w > mouse[0] > x and y + h > mouse[1] > y: # mouse [0] = x-coordinate of the mouse
         p.draw.rect(screen, ac, (x, y, w, h))  # create active button
         if click[0] == 1 and action is not None:  # click[0] = left click
             if action == "play":
@@ -79,7 +79,7 @@ def button(message, x, y, w, h, ic, ac, action=None):  # x,y = coord. w=width, h
                 mearth = 5.972 * 10**24
                 G = 6.67234 * 10**(-11)
                 parameter_loop()
-
+     # if the mouse isn't in a rectangle, the color will change
     else:
         p.draw.rect(screen, ic, (x, y, w, h))
 
@@ -87,7 +87,7 @@ def button(message, x, y, w, h, ic, ac, action=None):  # x,y = coord. w=width, h
     textRect.center = ((x+(w/2)), ((y+(h/2))))
     screen.blit(textSurf, textRect)
 
-
+# Define Launch Menu to begin the simulation
 def parameter_loop():
 
     para_exit = False
@@ -105,13 +105,12 @@ def parameter_loop():
 
         p.display.update()
 
-
 class InputBox:
 
     def __init__(self, x, y, w, h, text=''):
         self.rect = p.Rect(x, y, w, h)
         self.color = c_i
-        self.text = text  # text input
+        self.text = text  # text wich is inputed
         self.txt_surface = FONT.render(text, True, self.color)
         self.active = False
 
@@ -125,7 +124,7 @@ class InputBox:
                 self.active = False
             # Change the current color of the input box.
             self.color = c_a if self.active else c_a
-            # Action that occur if return key is pressed
+            # Action that occur if a key is pressed
         if event.type == p.KEYDOWN:
             if self.active:
                 if event.key == p.K_RETURN:
@@ -146,25 +145,32 @@ class InputBox:
         self.rect.w = width
 
     def draw(self, screen):
-        # Blit the text.
+        # Blit the text
         screen.blit(self.txt_surface, (self.rect.x+5, self.rect.y+5))
-        # Blit the rect.
+        # Blit the rectangle
         p.draw.rect(screen, self.color, self.rect, 2)
-        # Blit Default_Setting button
+        # Blit Default_Setting and Retrun buttons
         button('Default Setting', s.WIDTH/2 - 220, 500, 200, 50, yellow_launch, bright_yellow_launch, 'Default')
         button('Return', s.WIDTH/2 + 40, 500, 200, 50, yellow_launch, bright_yellow_launch, 'return')
 
-
+#create InputsBoxes and possibility to change some variables
 def main():
 
-    input_box1 = InputBox(300, 100, 140, 32)
-    input_box2 = InputBox(300, 160, 140, 32)
-    input_box3 = InputBox(300, 220, 140, 32)
-    input_box4 = InputBox(300, 280, 140, 32)
-    input_box5 = InputBox(300, 340, 140, 32)
+    input_box1 = InputBox(450, 100, 140, 32)
+    input_box2 = InputBox(450, 160, 140, 32)
+    input_box3 = InputBox(450, 220, 140, 32)
+    input_box4 = InputBox(450, 280, 140, 32)
+    input_box5 = InputBox(450, 340, 140, 32)
     input_boxes = [input_box1, input_box2, input_box3, input_box4, input_box5]
 
     enter = False
+    screen.blit(settingimg, (0, 0))
+    message_screen('Parameters',mediumText, s.WIDTH/2, 30)
+    message_screen('Mass of Space Ship',smallText, 320, 115)
+    message_screen('Acceleration of Space Ship',smallText, 270, 175)
+    message_screen('Mass of Sun',smallText, 360, 235)
+    message_screen('Mass of Earth',smallText, 350, 295)
+    message_screen('Constant of Gravitation',smallText, 290, 355)
 
     while not enter:
         for event in p.event.get():
@@ -175,18 +181,11 @@ def main():
         for box in input_boxes:
             box.update()
 
-        screen.blit(settingimg, (0, 0))
-        message_screen('Parameters',mediumText, s.WIDTH/2, 30)
-        message_screen('Mass of Space Ship',smallText, 200, 115)
-        message_screen('Acceleration of Space Ship',smallText, 160, 175)
-        message_screen('Mass of Sun',smallText, 227, 235)
-        message_screen('Mass of Earth',smallText, 220, 295)
-        message_screen('Constant of Gravitation',smallText, 170, 355)
         for box in input_boxes:
             box.draw(screen)
 
         p.display.flip()
-        clock.tick(12)
+        clock.tick(60)
 
 
 # # # # # # # # # #
