@@ -20,6 +20,7 @@ MAINFONT = p.font.SysFont("monospace", 25)
 class Space_object:
     space_objects = []
     step_accumulation = 0.0
+    center_index = 0
 
     def __init__(self, screen, pos, mass, img,
                  vel=np.zeros(2),
@@ -28,6 +29,8 @@ class Space_object:
         self.screen = screen
         self.pos = pos
         self.img = img
+        self.img_factor = s.ZOOM_FACTOR
+        self.img_original = img
         self.mass = mass
         self.vel = vel
 
@@ -61,6 +64,11 @@ class Space_object:
         p.draw.aalines(self.screen, self.trace_color, False, trace_list, 1)
 
         # draw shape
+        if (self.img_factor != s.ZOOM_FACTOR):
+            self.img_factor = s.ZOOM_FACTOR
+            size = self.img_original.get_size()
+            self.img = p.transform.scale(self.img_original,
+                      (int(size[0] * s.ZOOM_FACTOR), int(size[1] * s.ZOOM_FACTOR)))
         self.screen.blit(self.img,
                          self.img.get_rect(center=self.convert(self.pos).tolist()))
 
@@ -140,20 +148,24 @@ class Space_object:
         for space_object1 in cls.space_objects:
             space_object1.draw()
 
+    # Change center point
+    @classmethod
+    def centerclick(cls, click):
+        for i, so in enumerate(Space_object.space_objects):
+            rect = so.img.get_rect(center=Space_object.convert(so.pos))
+            if rect.collidepoint(click):
+                s.CENTER_INDEX = i
+
     # Draw all space_objects
     @classmethod
     def convert(self, pos):
         # Am Anfang ist die Sonne im Zenter bzw. die Anfangskoordinate der Sonne
-        if (s.ZOOM_FACTOR == 1.0):
-            tmp_pos = (pos * s.ZOOM_FACTOR) / s.V_SIZE * s.SIZE
-
-        # Für Zoom ist immer die Sonde im Zentrum
-        else:
-            spacecraft_pos = self.space_objects[1].pos
-            # Alles zum Ursprung Sonne verschieben und dann skalieren
-            resourced_pos = (pos - spacecraft_pos) * s.ZOOM_FACTOR
-            # Zurückverschieben
-            tmp_pos = (resourced_pos + spacecraft_pos) / s.V_SIZE * s.SIZE
+        center_pos = self.space_objects[s.CENTER_INDEX].pos
+        sun_pos = self.space_objects[0].pos
+        # Alles zum Ursprung Sonne verschieben und dann skalieren
+        resourced_pos = (pos - center_pos) * s.ZOOM_FACTOR
+        # Zurückverschieben
+        tmp_pos = (resourced_pos + s.v_center) / s.V_SIZE * s.SIZE
         return tmp_pos.round().astype(int)
 
 
@@ -179,6 +191,10 @@ def animation_loop():
                     s.ZOOM_FACTOR *= 2
                 if (event.key == p.K_MINUS and s.ZOOM_FACTOR >= 2):
                     s.ZOOM_FACTOR /= 2
+
+            # Change view center
+            if event.type == p.MOUSEBUTTONDOWN:
+                Space_object.centerclick(event.pos)
 
         # Nice Background
         screen.blit(background_image, [0, 0])

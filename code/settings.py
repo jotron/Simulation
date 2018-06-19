@@ -13,6 +13,7 @@ SPEED_FACTORS = [1, 10000, 1000000, 5000000, 10000000,
                  20000000, 50000000, 100000000]
 SPEED_INDEX = 1
 ZOOM_FACTOR = 1.0
+CENTER_INDEX = 0
 v_center = np.array([V_WIDTH/2, V_HEIGHT/2])
 
 # Space_object Constants
