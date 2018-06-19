@@ -9,8 +9,6 @@ FRAMERATE = 30
 # GENERAL SIMULATION
 TIME_STEP = 3600 * 100
 FRAMERATE = 30
-TRACE_TIME = 365 * 24 * 3600  # TIME_LENGTH of TRACE
-TRACE_LENGTH = 100
 V_SIZE = V_WIDTH, V_HEIGHT = 3.5e9, 3.5e9  # Total size of System = 3e9km
 SPEED_FACTORS = [1, 10000, 1000000, 5000000, 10000000,
                  20000000, 50000000, 100000000]
@@ -34,6 +32,8 @@ OBJECT_IMG = [p.image.load('assets/sun.png'),
               p.image.load('assets/mars.png'),
               p.image.load('assets/jupiter.png'),
               p.image.load('assets/saturn.png')]
+TRACE_LENGTH = [5, 50, 50, 150, 150]
+TRACE_TIME = [24*3600*365*29.5, 24*3600*365, 24*3600*687, 24*3600*365*11.8, 24*3600*365*29.5]
 
 # COLORS
 black = (0, 0, 0)

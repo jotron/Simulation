@@ -191,8 +191,7 @@ def main():
 # # # # # # # # # #
 # START FUNCTION  #
 # # # # # # # # # #
-def game_intro(main_p, main_screen, main_clock, main_simulation):
-
+def init_menu(main_p, main_screen, main_clock, main_simulation):
     global p
     p = main_p
     global screen
@@ -201,6 +200,11 @@ def game_intro(main_p, main_screen, main_clock, main_simulation):
     clock = main_clock
     global init_simulation
     init_simulation = main_simulation
+
+    game_intro()
+
+
+def game_intro():
 
     intro = True
 

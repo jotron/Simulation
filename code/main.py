@@ -20,11 +20,11 @@ MAINFONT = p.font.SysFont("monospace", 25)
 class Space_object:
     space_objects = []
     step_accumulation = 0.0
-    trace_accumulation = 0.0
 
-    def __init__(self, screen, pos, img, mass=5.9*10**24,
+    def __init__(self, screen, pos, mass, img,
                  vel=np.zeros(2),
-                 trace_color=(180, 180, 180)):
+                 trace_color=(180, 180, 180),
+                 trace_length=100, trace_time=3600*24*365):
         self.screen = screen
         self.pos = pos
         self.img = img
@@ -32,7 +32,10 @@ class Space_object:
         self.vel = vel
 
         self.trace_color = trace_color
-        self.trace_true = np.tile(pos, (s.TRACE_LENGTH, 1))
+        self.trace_length = trace_length
+        self.trace_time = trace_time
+        self.trace_accumulation = 0.0
+        self.trace = np.tile(pos, (trace_length, 1))
         self.trace_index = 0
 
         self.space_objects.append(self)
@@ -43,15 +46,17 @@ class Space_object:
         self.vel = vel
 
     # Draw Space Object
-    def draw(self, trace_accumulation):
+    def draw(self):
         # store position for one year
-        trace_step = (365*24*3600) / s.TRACE_LENGTH
-        for i in range(int(trace_accumulation / trace_step)):
-            self.trace_true[self.trace_index % s.TRACE_LENGTH] = self.pos
+        self.trace_accumulation += s.SPEED_FACTORS[s.SPEED_INDEX] / s.FRAMERATE
+        trace_step = (self.trace_time) / self.trace_length
+        for i in range(int(self.trace_accumulation / trace_step)):
+            self.trace[self.trace_index % self.trace_length] = self.pos
             self.trace_index += 1
+        self.trace_accumulation = self.trace_accumulation % trace_step
 
         # draw trace
-        rolled_trace = np.roll(self.trace_true, -self.trace_index, 0)
+        rolled_trace = np.roll(self.trace, -self.trace_index, 0)
         trace_list = self.convert(rolled_trace).tolist()
         p.draw.aalines(self.screen, self.trace_color, False, trace_list, 1)
 
@@ -71,15 +76,15 @@ class Space_object:
             for i in range(0, len(pos)):
                 for j in range(i+1, len(pos)):
                     # Space Object Position
-                    soi = cls.space_objects[i]
-                    soj = cls.space_objects[j]
+                    mi = cls.space_objects[i].mass
+                    mj = cls.space_objects[j].mass
                     # Vector from i to j
-                    rij = soj.pos - soi.pos
+                    rij = pos[j] - pos[i]
                     # Force from i to j
-                    Fij = (G * soi.mass * soj.mass * rij) / np.linalg.norm(rij)**3
+                    Fij = (G * mi * mj * rij) / np.linalg.norm(rij)**3
                     # Acceleration on soi and soj
-                    a[i] += Fij / soi.mass
-                    a[j] -= Fij / soj.mass
+                    a[i] += Fij / mi
+                    a[j] -= Fij / mj
             return a
 
         # # # # # # # #
@@ -129,18 +134,11 @@ class Space_object:
             next_vel = state[1][i]
             space_object1.change_state(next_pos, next_vel)
 
-        # set trace accumulation
-        cls.trace_accumulation += s.SPEED_FACTORS[s.SPEED_INDEX] / s.FRAMERATE
-
     # Draw all space_objects
     @classmethod
     def draw_all(cls):
         for space_object1 in cls.space_objects:
-            space_object1.draw(cls.trace_accumulation)
-
-        # reset trace_accumulation
-        trace_step = (365*24*3600) / s.TRACE_LENGTH
-        cls.trace_accumulation = cls.trace_accumulation % trace_step
+            space_object1.draw()
 
     # Draw all space_objects
     @staticmethod
@@ -181,11 +179,12 @@ def animation_loop():
 
 # Initialize class instances
 def init_simulation():
-    for i in range(len(s.STARTPOS)):
-        Space_object(screen, s.STARTPOS[i], s.OBJECT_IMG[i], s.MASS[i],
-                     s.STARTVEL[i])
+    for i in range(len(s.STARTPOS)):  # len(s.STARTPOS)
+        Space_object(screen, s.STARTPOS[i], s.MASS[i], s.OBJECT_IMG[i],
+                     s.STARTVEL[i], trace_length=s.TRACE_LENGTH[i],
+                     trace_time=s.TRACE_TIME[i])
     animation_loop()
 
 
-menu.game_intro(p, screen, clock, init_simulation)
+menu.init_menu(p, screen, clock, init_simulation)
 p.quit()
