@@ -141,10 +141,19 @@ class Space_object:
             space_object1.draw()
 
     # Draw all space_objects
-    @staticmethod
-    def convert(pos):
-        tmp_pos = pos / s.V_SIZE * s.SIZE
-        #  print(pos, tmp_pos, tuple(tmp_pos.astype(int)))
+    @classmethod
+    def convert(self, pos):
+        # Am Anfang ist die Sonne im Zenter bzw. die Anfangskoordinate der Sonne
+        if (s.ZOOM_FACTOR == 1.0):
+            tmp_pos = (pos * s.ZOOM_FACTOR) / s.V_SIZE * s.SIZE
+
+        # Für Zoom ist immer die Sonde im Zentrum
+        else:
+            spacecraft_pos = self.space_objects[1].pos
+            # Alles zum Ursprung Sonne verschieben und dann skalieren
+            resourced_pos = (pos - spacecraft_pos) * s.ZOOM_FACTOR
+            # Zurückverschieben
+            tmp_pos = (resourced_pos + spacecraft_pos) / s.V_SIZE * s.SIZE
         return tmp_pos.round().astype(int)
 
 
@@ -157,10 +166,19 @@ def animation_loop():
                 sys.exit()
             # SET SPEED
             if event.type == p.KEYUP:
+
+                # Increase and Decrease Speed
                 if (event.key == p.K_UP and s.SPEED_INDEX < len(s.SPEED_FACTORS) - 1):
                     s.SPEED_INDEX += 1
                 if (event.key == p.K_DOWN and s.SPEED_INDEX >= 1):
                     s.SPEED_INDEX -= 1
+
+                # Increase Zoom factor => press shift and 1 simultaneously
+                if (event.key == p.K_1 and p.key.get_mods() & p.KMOD_SHIFT
+                and s.ZOOM_FACTOR <= 10):
+                    s.ZOOM_FACTOR *= 2
+                if (event.key == p.K_MINUS and s.ZOOM_FACTOR >= 2):
+                    s.ZOOM_FACTOR /= 2
 
         # Nice Background
         screen.blit(background_image, [0, 0])
@@ -169,9 +187,13 @@ def animation_loop():
         Space_object.run_all()
         Space_object.draw_all()
 
+        # Speed and Zoom
         SPEEDLABEL = MAINFONT.render(f"X {s.SPEED_FACTORS[s.SPEED_INDEX]}",
                                      1, (0, 255, 255))
+        ZOOMLABEL = MAINFONT.render(f"X {s.ZOOM_FACTOR}",
+                                    1, (0, 255, 255))
         screen.blit(SPEEDLABEL, (680, 20))
+        screen.blit(ZOOMLABEL, (680, 40))
 
         p.display.update()
         clock.tick(s.FRAMERATE)

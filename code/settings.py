@@ -7,12 +7,12 @@ SIZE = WIDTH, HEIGHT = 800, 800
 FRAMERATE = 30
 
 # GENERAL SIMULATION
-TIME_STEP = 3600 * 100
-FRAMERATE = 30
+TIME_STEP = 3600 * 24
 V_SIZE = V_WIDTH, V_HEIGHT = 3.5e9, 3.5e9  # Total size of System = 3e9km
 SPEED_FACTORS = [1, 10000, 1000000, 5000000, 10000000,
                  20000000, 50000000, 100000000]
 SPEED_INDEX = 1
+ZOOM_FACTOR = 1.0
 v_center = np.array([V_WIDTH/2, V_HEIGHT/2])
 
 # Space_object Constants
@@ -32,6 +32,12 @@ OBJECT_IMG = [p.image.load('assets/sun.png'),
               p.image.load('assets/mars.png'),
               p.image.load('assets/jupiter.png'),
               p.image.load('assets/saturn.png')]
+COLOR = [(255, 255, 0),    # Sun = Yellow
+         (0, 0, 255),      # Earth = Blue
+         (255, 0, 0),      # Mars = Red
+         (153, 102, 51),   # Jupyter = Brown
+         (140, 140, 140)]  # Saturn = Grey
+RADIUS = [695700.0, 6378.0, 3396.0, 69911.0, 60268.0]
 TRACE_LENGTH = [5, 50, 50, 150, 150]
 TRACE_TIME = [24*3600*365*29.5, 24*3600*365, 24*3600*687, 24*3600*365*11.8, 24*3600*365*29.5]
 
