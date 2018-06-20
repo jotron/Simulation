@@ -115,6 +115,7 @@ class InputBox:
         self.active = False
 
     def write_input(self, event):
+        mouse = p.mouse.get_pos()
         if event.type == p.MOUSEBUTTONDOWN:
             # If the user clicked on the input_box rect.
             if self.rect.collidepoint(event.pos):
@@ -129,6 +130,14 @@ class InputBox:
             if self.active:
                 if event.key == p.K_RETURN:
                     self.color = lime
+                    if 450 + 140 > mouse[0] > 450 and 100 + 32 > mouse[1] > 100: # Define which box_input is selected
+                        print(self.text)
+                        self.text = ''
+                        s.MASS[0]=['']
+                    elif 450 + 140 > mouse[0] > 450 and 160 + 32 > mouse[1] > 160: # Define which box_input is selected
+                        print(self.text)
+                        self.text = ''
+                        s.MASS[1]=['']
                 elif event.key == p.K_BACKSPACE:
                     self.text = self.text[:-1]
                 elif event.key == p.K_COMMA:
