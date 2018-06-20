@@ -13,7 +13,7 @@ clock = p.time.Clock()  # Brauchen wir zur Framerate-Kontrolle
 
 # background_image
 background_image = p.image.load("assets/background.jpg").convert()
-MAINFONT = p.font.SysFont("monospace", 25)
+MAINFONT = p.font.Font("assets/font.ttf", 20)
 
 
 # Class for all objects with mass
@@ -186,10 +186,9 @@ def animation_loop():
                     s.SPEED_INDEX -= 1
 
                 # Increase Zoom factor => press shift and 1 simultaneously
-                if (event.key == p.K_1 and p.key.get_mods() & p.KMOD_SHIFT
-                and s.ZOOM_FACTOR <= 10):
+                if (event.key == p.K_p and s.ZOOM_FACTOR <= 10):
                     s.ZOOM_FACTOR *= 2
-                if (event.key == p.K_MINUS and s.ZOOM_FACTOR >= 2):
+                if (event.key == p.K_m and s.ZOOM_FACTOR >= 2):
                     s.ZOOM_FACTOR /= 2
 
             # Change view center
@@ -204,19 +203,23 @@ def animation_loop():
         Space_object.draw_all()
 
         # Speed and Zoom
-        SPEEDLABEL = MAINFONT.render(f"X {s.SPEED_FACTORS[s.SPEED_INDEX]}",
+        SPEEDLABEL = MAINFONT.render("X {}".format(s.SPEED_FACTORS[s.SPEED_INDEX]),
                                      1, (0, 255, 255))
-        ZOOMLABEL = MAINFONT.render(f"X {s.ZOOM_FACTOR}",
+        ZOOMLABEL = MAINFONT.render("X {}".format(s.ZOOM_FACTOR),
                                     1, (0, 255, 255))
-        screen.blit(SPEEDLABEL, (680, 20))
-        screen.blit(ZOOMLABEL, (680, 40))
+        screen.blit(SPEEDLABEL, (660, 20))
+        screen.blit(ZOOMLABEL, (660, 40))
 
         p.display.update()
         clock.tick(s.FRAMERATE)
 
 
 # Initialize class instances
-def init_simulation():
+def init_simulation(ss=s):
+    # Change variable constans
+    global s
+    s = ss
+
     for i in range(len(s.STARTPOS)):  # len(s.STARTPOS)
         Space_object(screen, s.STARTPOS[i], s.MASS[i], s.OBJECT_IMG[i],
                      s.STARTVEL[i], trace_length=s.TRACE_LENGTH[i],

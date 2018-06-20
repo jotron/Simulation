@@ -32,7 +32,7 @@ grey = (30, 30, 30)
 
 # BILDER
 MainMenuimg = pygame.image.load('assets/MainMenu.jpg')
-settingimg = pygame.image.load('assets/setting.jpg')
+settingimg = pygame.image.load('assets/backgroundblack.jpg')
 MenuParameterimg = pygame.image.load('assets/ConfMenu.jpg')
 
 
@@ -62,7 +62,7 @@ def button(message, x, y, w, h, ic, ac, action=None):  # x,y = coord. w=width, h
             if action == "play":
                 parameter_loop()
             elif action == "launch":
-                init_simulation()
+                init_simulation(s)
             elif action == "quit":
                 p.quit()
                 quit()
@@ -130,14 +130,12 @@ class InputBox:
             if self.active:
                 if event.key == p.K_RETURN:
                     self.color = lime
-                    if 450 + 140 > mouse[0] > 450 and 100 + 32 > mouse[1] > 100: # Define which box_input is selected
-                        print(self.text)
-                        self.text = ''
-                        s.MASS[0]=['']
-                    elif 450 + 140 > mouse[0] > 450 and 160 + 32 > mouse[1] > 160: # Define which box_input is selected
-                        print(self.text)
-                        self.text = ''
-                        s.MASS[1]=['']
+                    # Define which box_input is selected
+                    if 450 + 140 > mouse[0] > 450 and 100 + 32 > mouse[1] > 100:
+                        s.MASS[0] = float(self.text)
+                    # Define which box_input is selected
+                    elif 450 + 140 > mouse[0] > 450 and 160 + 32 > mouse[1] > 160:
+                        s.MASS[1] = float(self.text)
                 elif event.key == p.K_BACKSPACE:
                     self.text = self.text[:-1]
                 elif event.key == p.K_COMMA:
@@ -179,7 +177,7 @@ def main():
     message_screen('Acceleration of Space Ship',smallText, 270, 175)
     message_screen('Mass of Sun',smallText, 360, 235)
     message_screen('Mass of Earth',smallText, 350, 295)
-    message_screen('Constant of Gravitation',smallText, 290, 355)
+    message_screen('Delta T [s]',smallText, 370, 355)
 
     while not enter:
         for event in p.event.get():
