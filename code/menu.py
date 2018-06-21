@@ -75,9 +75,7 @@ def button(message, x, y, w, h, ic, ac, action=None):  # x,y = coord. w=width, h
                 msonde_t1 = msonde_t0 - 2286 * 10**3  # After 150sec
                 msonde_t2 = msonde_t1 - 464 * 10**3   # After 360sec
                 msonde_t3 = msonde_t2 - 114 * 10**3   # After 500sec   source(nasa.wikibis.com)
-                msun = 1.989 * 10**30
-                mearth = 5.972 * 10**24
-                G = 6.67234 * 10**(-11)
+              
                 parameter_loop()
      # if the mouse isn't in a rectangle, the color will change
     else:
@@ -128,14 +126,37 @@ class InputBox:
             # Action that occur if a key is pressed
         if event.type == p.KEYDOWN:
             if self.active:
-                if event.key == p.K_RETURN:
+                # Define which box_input is selected (mass of spaceship)
+                """if event.key == p.K_RETURN and 450 + 140 > mouse[0] > 450 and 100 + 32 > mouse[1] > 100:
                     self.color = lime
-                    # Define which box_input is selected
-                    if 450 + 140 > mouse[0] > 450 and 100 + 32 > mouse[1] > 100:
-                        s.MASS[0] = float(self.text)
-                    # Define which box_input is selected
-                    elif 450 + 140 > mouse[0] > 450 and 160 + 32 > mouse[1] > 160:
-                        s.MASS[1] = float(self.text)
+                    s.spaceship = float(self.text)
+                    print(s.spaceship)
+                    
+                if event.key == p.K_RETURN and 450 + 140 > mouse[0] > 450 and 160 + 32 > mouse[1] > 160:
+                    self.color = lime
+                    s.spaceship = float(self.text)
+                    print(s.ss_acc)"""
+                    
+                if event.key == p.K_RETURN and 450 + 140 > mouse[0] > 450 and 220 + 32 > mouse[1] > 220:
+                    self.color = lime
+                    s.MASS[0] = float(self.text)
+                    print(s.MASS[0])
+                    
+                elif event.key == p.K_RETURN and 450 + 140 > mouse[0] > 450 and 280 + 32 > mouse[1] > 280:
+                    self.color = lime
+                    s.MASS[1] = float(self.text)
+                    print(s.MASS[1])
+
+                elif event.key == p.K_RETURN and 450 + 140 > mouse[0] > 450 and 340 + 32 > mouse[1] > 340:
+                    self.color = lime
+                    s.G = float(self.text)
+                    print(s.G)
+
+                elif event.key == p.K_RETURN and 450 + 140 > mouse[0] > 450 and 400 + 32 > mouse[1] > 400:
+                    self.color = lime
+                    s.TIME_STEP = float(self.text)
+                    print(s.TIME_STEP)
+                    
                 elif event.key == p.K_BACKSPACE:
                     self.text = self.text[:-1]
                 elif event.key == p.K_COMMA:
@@ -148,7 +169,7 @@ class InputBox:
 
     def update(self):
         # Resize the box if the text is too long.
-        width = max(200, self.txt_surface.get_width()+10)
+        width = max(300, self.txt_surface.get_width()+10)
         self.rect.w = width
 
     def draw(self, screen):
@@ -168,7 +189,8 @@ def main():
     input_box3 = InputBox(450, 220, 140, 32)
     input_box4 = InputBox(450, 280, 140, 32)
     input_box5 = InputBox(450, 340, 140, 32)
-    input_boxes = [input_box1, input_box2, input_box3, input_box4, input_box5]
+    input_box6 = InputBox(450, 400, 140, 32)
+    input_boxes = [input_box1, input_box2, input_box3, input_box4, input_box5, input_box6]
 
     enter = False
     screen.blit(settingimg, (0, 0))
@@ -178,6 +200,7 @@ def main():
     message_screen('Mass of Sun',smallText, 360, 235)
     message_screen('Mass of Earth',smallText, 350, 295)
     message_screen('Delta T [s]',smallText, 370, 355)
+    message_screen('Calculus Steps',smallText, 340, 415)
 
     while not enter:
         for event in p.event.get():
