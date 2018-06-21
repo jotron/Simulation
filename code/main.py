@@ -207,8 +207,8 @@ def animation_loop():
                                      1, (0, 255, 255))
         ZOOMLABEL = MAINFONT.render("X {}".format(s.ZOOM_FACTOR),
                                     1, (0, 255, 255))
-        screen.blit(SPEEDLABEL, (660, 20))
-        screen.blit(ZOOMLABEL, (660, 40))
+        screen.blit(SPEEDLABEL, (10, 20))
+        screen.blit(ZOOMLABEL, (10, 40))
 
         p.display.update()
         clock.tick(s.FRAMERATE)
