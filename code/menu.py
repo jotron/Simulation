@@ -157,6 +157,21 @@ class InputBox:
                     s.TIME_STEP = float(self.text)
                     print(s.TIME_STEP)
                     
+                elif event.key == p.K_RETURN and 450 + 140 > mouse[0] > 450 and 460 + 32 > mouse[1] > 460:
+                    self.color = lime
+                    s.MASS[2] = float(self.text)
+                    print(s.MASS[2])
+
+                elif event.key == p.K_RETURN and 450 + 140 > mouse[0] > 450 and 520 + 32 > mouse[1] > 520:
+                    self.color = lime
+                    s.MASS[3] = float(self.text)
+                    print(s.MASS[3])
+                    
+                elif event.key == p.K_RETURN and 450 + 140 > mouse[0] > 450 and 580 + 32 > mouse[1] > 580:
+                    self.color = lime
+                    s.MASS[4] = float(self.text)
+                    print(s.MASS[4])
+                    
                 elif event.key == p.K_BACKSPACE:
                     self.text = self.text[:-1]
                 elif event.key == p.K_COMMA:
@@ -178,8 +193,8 @@ class InputBox:
         # Blit the rectangle
         p.draw.rect(screen, self.color, self.rect, 2)
         # Blit Default_Setting and Retrun buttons
-        button('Default Setting', s.WIDTH/2 - 220, 500, 200, 50, yellow_launch, bright_yellow_launch, 'Default')
-        button('Return', s.WIDTH/2 + 40, 500, 200, 50, yellow_launch, bright_yellow_launch, 'return')
+        button('Default Setting', s.WIDTH/2 - 220, 650, 200, 50, yellow_launch, bright_yellow_launch, 'Default')
+        button('Return', s.WIDTH/2 + 40, 650, 200, 50, yellow_launch, bright_yellow_launch, 'return')
 
 #create InputsBoxes and possibility to change some variables
 def main():
@@ -190,7 +205,10 @@ def main():
     input_box4 = InputBox(450, 280, 140, 32)
     input_box5 = InputBox(450, 340, 140, 32)
     input_box6 = InputBox(450, 400, 140, 32)
-    input_boxes = [input_box1, input_box2, input_box3, input_box4, input_box5, input_box6]
+    input_box7 = InputBox(450, 460, 140, 32)
+    input_box8 = InputBox(450, 520, 140, 32)
+    input_box9 = InputBox(450, 580, 140, 32)
+    input_boxes = [input_box1, input_box2, input_box3, input_box4, input_box5, input_box6,input_box7,input_box8, input_box9]
 
     enter = False
     screen.blit(settingimg, (0, 0))
@@ -201,6 +219,9 @@ def main():
     message_screen('Mass of Earth',smallText, 350, 295)
     message_screen('Delta T [s]',smallText, 370, 355)
     message_screen('Calculus Steps',smallText, 340, 415)
+    message_screen('Mass of Mars',smallText, 340, 475)
+    message_screen('Mass of Jupyter',smallText, 340, 535)
+    message_screen('Mass of Saturn',smallText, 340, 595)
 
     while not enter:
         for event in p.event.get():
