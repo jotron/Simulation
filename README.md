@@ -11,8 +11,8 @@ python code/main.py
 ```↓``` = Slow down <br/>
 ```→``` = Pilot rocket to the right <br/>
 ```←``` = Pilot rocket to the left <br/>
-```+``` = Zoom in <br/>
-```-``` = Zoom out <br/>
+```p``` = Zoom in <br/>
+``m`` = Zoom out <br/>
 ```esc```= quit <br/>
 
 ### Icon License
