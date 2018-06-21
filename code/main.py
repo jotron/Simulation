@@ -78,7 +78,7 @@ class Space_object:
 
         # DGL for N-Objects
         def DGL(pos):
-            G = 6.674e-20  # in km
+            G = s.G  # in km
             a = np.zeros_like(pos)
 
             for i in range(0, len(pos)):
