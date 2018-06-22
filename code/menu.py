@@ -36,13 +36,17 @@ def message_screen(text, text_size, widht, height):
 
 
 # Define an action if a button is pressed
-def button(message, x, y, w, h, ic, ac, action=None):  # x,y = coord. w=width, h= height, ic=inactive color ac=active color
+# x,y = coord. w=width, h= height, ic=inactive color ac=active color
+def button(message, x, y, w, h, ic, ac, action=None):
     mouse = p.mouse.get_pos()
     click = p.mouse.get_pressed()
     # Define if the mouse is in a rectangle's button
-    if x + w > mouse[0] > x and y + h > mouse[1] > y: # mouse [0] = x-coordinate of the mouse
-        p.draw.rect(screen, ac, (x, y, w, h))  # create active button
-        if click[0] == 1 and action is not None:  # click[0] = left click
+    # mouse [0] = x-coordinate of the mouse
+    if x + w > mouse[0] > x and y + h > mouse[1] > y:
+        # create active button
+        p.draw.rect(screen, ac, (x, y, w, h))
+        # click[0] = left click
+        if click[0] == 1 and action is not None:
             if action == "play":
                 parameter_loop()
             elif action == "launch":
@@ -56,9 +60,9 @@ def button(message, x, y, w, h, ic, ac, action=None):  # x,y = coord. w=width, h
                 game_intro()
             elif action == "Default":
                 msonde_t0 = 3038 * 10**3
-                msonde_t1 = msonde_t0 - 2286 * 10**3  # After 150sec
-                msonde_t2 = msonde_t1 - 464 * 10**3   # After 360sec
-                msonde_t3 = msonde_t2 - 114 * 10**3   # After 500sec   source(nasa.wikibis.com)
+                msonde_t1 = msonde_t0 - 2286e3  # After 150sec
+                msonde_t2 = msonde_t1 - 464e3   # After 360sec
+                msonde_t3 = msonde_t2 - 114e3   # After 500sec   source(nasa.wikibis.com)
                 s.MASS[0] = 2e30
                 s.MASS[1] = 5.974e24
                 s.MASS[2] = 6.419e23
@@ -97,10 +101,11 @@ class InputBox:
 
     def __init__(self, x, y, w, h, text=''):
         self.rect = p.Rect(x, y, w, h)
-        self.text = text  # text wich is inputed
+        # text wich is inputed
+        self.text = text
         self.color = s.c_i
         self.txt_surface = FONT.render(text, True, self.color)
-        self.active = False
+        self.actuel_color = False
 
     def write_input(self, event):
         mouse = p.mouse.get_pos()
@@ -108,15 +113,18 @@ class InputBox:
             # If the user clicked on the input_box rect.
             if self.rect.collidepoint(event.pos):
                 # Toggle the active variable.
-                self.active = not self.active
+                self.actuel_color = not self.actuel_color
             else:
-                self.active = False
+                self.actuel_color = False
             # Change the current color of the input box.
-            self.color = s.c_a if self.active else s.c_a
+            if self.actuel_color:
+                self.color = s.c_a
+            else:
+                self.color = s.c_i
             # Action that occur if a key is pressed
         if event.type == p.KEYDOWN:
-            if self.active:
-                # Define which box_input is selected (mass of spaceship)
+            if self.actuel_color:
+                # Define which box_input is selected (If coordinates of mouse are in a box)
                 """if event.key == p.K_RETURN and 450 + 140 > mouse[0] > 450 and 100 + 32 > mouse[1] > 100:
                     self.color = s.lime
                     s.spaceship = float(self.text)
@@ -131,9 +139,7 @@ class InputBox:
                     self.color = s.lime
                     s.MASS[0] = float(self.text)
                     print(s.MASS[0])
-                    pygame.time.wait(100)
-                    
-                   
+                          
                 elif event.key == p.K_RETURN and 450 + 300 > mouse[0] > 450 and 280 + 32 > mouse[1] > 280:
                     self.color = s.lime
                     s.MASS[1] = float(self.text)
@@ -171,7 +177,7 @@ class InputBox:
                 else:
                     self.text += event.unicode
                     
-                # Re-render the text.
+                # Re-render the text on the new surface.
                 self.txt_surface = FONT.render(self.text, True, self.color)
                 # convert text_input to float float(text)
 
@@ -188,6 +194,7 @@ class InputBox:
         # Blit Default_Setting and Retrun buttons
         button('Default Setting', s.WIDTH/2 - 220, 650, 200, 50, s.yellow_launch, s.bright_yellow_launch, 'Default')
         button('Return', s.WIDTH/2 + 40, 650, 200, 50, s.yellow_launch, s.bright_yellow_launch, 'return')
+        button('start', s.WIDTH/2 - 40, 710, 100, 50, s.blue_s, s.b_blue_s, 'play')
 
 #create InputsBoxes and possibility to change some variables
 def main():
