@@ -14,6 +14,7 @@ clock = p.time.Clock()  # Brauchen wir zur Framerate-Kontrolle
 # background_image
 background_image = p.image.load("assets/background.jpg").convert()
 MAINFONT = p.font.Font("assets/font.ttf", 20)
+obj_font = p.font.Font("assets/font.ttf", 15)
 
 
 # Class for all objects with mass
@@ -22,15 +23,16 @@ class Space_object:
     step_accumulation = 0.0
     center_index = 0
 
-    def __init__(self, screen, pos, mass, img,
+    def __init__(self, screen, name, pos, mass, radius, color,
                  vel=np.zeros(2),
                  trace_color=(180, 180, 180),
                  trace_length=100, trace_time=3600*24*365):
         self.screen = screen
         self.pos = pos
-        self.img = img
-        self.img_factor = s.ZOOM_FACTOR
-        self.img_original = img
+        self.radius = radius
+        self.color = color
+        self.rect = None
+        self.name = obj_font.render(name, 1, (0, 255, 255))
         self.mass = mass
         self.vel = vel
 
@@ -64,13 +66,15 @@ class Space_object:
         p.draw.aalines(self.screen, self.trace_color, False, trace_list, 1)
 
         # draw shape
-        if (self.img_factor != s.ZOOM_FACTOR):
-            self.img_factor = s.ZOOM_FACTOR
-            size = self.img_original.get_size()
-            self.img = p.transform.scale(self.img_original,
-                      (int(size[0] * s.ZOOM_FACTOR), int(size[1] * s.ZOOM_FACTOR)))
-        self.screen.blit(self.img,
-                         self.img.get_rect(center=self.convert(self.pos).tolist()))
+        rad = int(round(self.radius * s.ZOOM_FACTOR / s.V_WIDTH * s.WIDTH))
+        rad = max(rad, 3)
+        pos = self.convert(self.pos).tolist()
+        self.rect = p.draw.circle(self.screen, self.color,
+                                  pos, rad)
+
+        # Draw name of planet
+        texpos = (pos[0] + 5, pos[1] - 5)
+        screen.blit(self.name, texpos)
 
     # Get next position and velocity
     @classmethod
@@ -152,7 +156,8 @@ class Space_object:
     @classmethod
     def centerclick(cls, click):
         for i, so in enumerate(Space_object.space_objects):
-            rect = so.img.get_rect(center=Space_object.convert(so.pos))
+            #rect = so.img.get_rect(center=Space_object.convert(so.pos))
+            rect = so.rect
             if rect.collidepoint(click):
                 s.CENTER_INDEX = i
 
@@ -186,7 +191,7 @@ def animation_loop():
                     s.SPEED_INDEX -= 1
 
                 # Increase Zoom factor => press shift and 1 simultaneously
-                if (event.key == p.K_p and s.ZOOM_FACTOR <= 10):
+                if (event.key == p.K_p and s.ZOOM_FACTOR <= 2**18):
                     s.ZOOM_FACTOR *= 2
                 if (event.key == p.K_m and s.ZOOM_FACTOR >= 0.2):
                     s.ZOOM_FACTOR /= 2
@@ -221,8 +226,8 @@ def init_simulation(ss=s):
     s = ss
 
     for i in range(len(s.STARTPOS)):  # len(s.STARTPOS)
-        Space_object(screen, s.STARTPOS[i], s.MASS[i], s.OBJECT_IMG[i],
-                     s.STARTVEL[i], trace_length=s.TRACE_LENGTH[i],
+        Space_object(screen, s.NAME[i], s.STARTPOS[i], s.MASS[i], s.RADIUS[i],
+                     s.COLOR[i], s.STARTVEL[i], trace_length=s.TRACE_LENGTH[i],
                      trace_time=s.TRACE_TIME[i])
     animation_loop()
 
