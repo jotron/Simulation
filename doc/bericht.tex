@@ -20,7 +20,7 @@
 \maketitle
 
 \section{Auftrag}
-In unserem Projekt geht es darum, dass man im Sonnensystem, von der Erde aus, eine Raumsonde gezielt auf, bzw. in die Umlaufbahn eines anderen Planeten(z.B. Saturn) schiessen kann. Dabei soll ein swing-by Manöver um einen dazwischenliegenden Planeten(z.B. Jupiter) vollführt werden.
+In unserem Projekt geht es darum, dass man im Sonnensystem von der Erde aus eine Raumsonde gezielt auf, bzw. in die Umlaufbahn eines anderen Planeten(z.B. Saturn) schiessen kann. Dabei soll ein swing-by Manöver um einen dazwischenliegenden Planeten(z.B. Jupiter) vollführt werden.
 
 	\subsection{Persönliche Ziele}
 		\begin{itemize} 
@@ -43,8 +43,9 @@ Amin hatte dann begonnen das \textit{Runge-Kutta} Verfahren zu programmieren. Da
 Gleichzeitig widmete sich Joel, unter anfänglicher Unterstützung Simons, dem Programmieren eines Sonnensystems mit \textit{Pygame}. Dazu hat Simon nach Anfangsbedingungen für das Sonnensystem gesucht. Als Schwierigkeit stellte sich dabei die Berechnung der Anfangsgeschwindigkeiten der Planeten heraus. Durch Herr Kambors physikalische Unterstützung konnten diese jedoch sehr genau berechnet werden. 
 
 Als nächstes begann Amin damit ein Menu zu programmieren, während Joel das fertiggestellte \textit{Runge-Kutta} Verfahren in das main-Programm implementierte. Schnell schien die Simulation zu funktionieren, da sich die Planeten für eine kurze Zeit korrekt bewegten. Allerdings nahm ihr Abstand zur Sonne stetig zu, was eindeutig nicht sein sollte. Der Fehler wurde nicht gleich gefunden, doch konnte festgestellt werden, dass er irgendwo im Programmcode steckt, denn die Anfangsbedingungen wurden alle nochmals überprüft und mit den Angaben der NASA verglichen. Herausgestellt hat sich dann, dass es lediglich ein Flüchtigkeitsfehler war und in der Differenzialgleichung auf alte Positionen zugegriffen wurde.
-Danach wurde das Menu implementiert, in welchem man auswählen kann, ob man die Rakete selbst steuert oder ob ihr Flug simuliert werden soll. Als weitere Funktion kann man im Menu einige wichtige Parameter festsetzen. Dies funktionierte aber noch nicht, denn trotz eingegebenen Daten ändert sich überhaupt nichts an der Simulation. Joel widmete sich dann dem Schreiben einer Zoom-Funktion, mit welcher man direkt auf einen Planeten zoomen kann. Parallell dazu hat Simon eine Funktion geschrieben, damit man manuell bestimmen kann wie schnell die Zeit in der Simulation vergeht. 
-Als letzter Schritt wurde der ganz Programmcode nochmals sorgfältig überarbeitet und kommentiert.
+
+Danach wurde das Menu implementiert, in welchem man auswählen kann, ob man die Rakete selbst steuert oder ob ihr Flug simuliert werden soll. Als weitere Funktion kann man im Menu einige wichtige Parameter festsetzen. Dies funktionierte aber noch nicht, denn trotz eingegebenen Daten ändert sich überhaupt nichts an der Simulation. Joel widmete sich dann dem Schreiben einer Zoom-Funktion, mit welcher man direkt auf einen Planeten zoomen kann. Parallell dazu hat Simon eine Funktion geschrieben, damit man manuell bestimmen kann, wie schnell die Zeit in der Simulation vergeht. 
+Als letzter Schritt wurde der ganze Programmcode nochmals sorgfältig überarbeitet und kommentiert.
 
 \section{Produkt (aktueller Stand)}
 \begin{figure}[hbt]
@@ -56,12 +57,12 @@ Als letzter Schritt wurde der ganz Programmcode nochmals sorgfältig überarbeit
 \subsection{Simulation des Sonnensystems}
 Aktuell kann das Programm erfolgreich das Sonnensystem mit ausgewählten Planeten simulieren. Simuliert werden Erde, Mars, Jupiter und Saturn. Die Anfangsbedingungen stimmen sehr genau mit dem Sonnensystem überein.
 \subsubsection{Implementation des \textit{Runge-Kutta }Verfahrens}
-Das \textit{Runge-Kutta} Verfahren wird lediglich einmal, jedoch gleich für alle Planeten durchgeführt. Das liegt daran, dass bei einem Schritt auch die neuen Positionn der anderen Planeten berücksichtigt werden muss.
+Das \textit{Runge-Kutta} Verfahren wird lediglich einmal, jedoch gleich für alle Planeten durchgeführt. Das liegt daran, dass bei einem Schritt auch die neuen Positionen der anderen Planeten berücksichtigt werden müssen.
 
 In der DGL werden zuerst alle Beschleunigungen addiert, die auf einen Körper wirken.
 \subsection{Interface}
 \subsubsection{Menu}
-Ein Menu wurde ebenfalls implementiert. Allerdings ist es noch voller kleiner, versteckter Fehler. Es gibt momentan schon viele Knöpfe, aber viele sind noch ohne Funktion. Später soll man dann zwischen den Modi wechseln können und Konstanten ändern.
+Ein Menu wurde ebenfalls implementiert. Allerdings hat es noch einige kleine, versteckte Fehler. Es gibt momentan schon viele Knöpfe, aber einige sind noch ohne Funktion. Später soll man dann zwischen den Modi wechseln können und Konstanten ändern.
 \subsubsection{Zoom}
 Ein Zoom war wichtig für die Raumsonde. Ohne Zoom wäre es unmöglich, die Sonde in Erdnähe präzis zu steuern. Wenn man mit der Maustaste auf Körper drückt, kann man das Zentrum der Simulation ändern. So ist es dann möglich, auf einen einzelnen Planeten zu zoomen.
 
