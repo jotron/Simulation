@@ -188,7 +188,7 @@ def animation_loop():
                 # Increase Zoom factor => press shift and 1 simultaneously
                 if (event.key == p.K_p and s.ZOOM_FACTOR <= 10):
                     s.ZOOM_FACTOR *= 2
-                if (event.key == p.K_m and s.ZOOM_FACTOR >= 2):
+                if (event.key == p.K_m and s.ZOOM_FACTOR >= 0.2):
                     s.ZOOM_FACTOR /= 2
 
             # Change view center
