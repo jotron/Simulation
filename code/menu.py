@@ -1,5 +1,6 @@
 import settings as s
 import pygame
+import time
 pygame.init()
 
 p = None
@@ -7,6 +8,7 @@ screen = None
 clock = None
 
 # SCHRIFTARTEN
+Note = pygame.font.Font('freesansbold.ttf', 17)
 smallText = pygame.font.Font('freesansbold.ttf', 25)
 mediumText = pygame.font.Font('freesansbold.ttf', 43)
 largeText = pygame.font.Font('freesansbold.ttf', 50)
@@ -20,7 +22,7 @@ MenuParameterimg = pygame.image.load('assets/ConfMenu.jpg')
 
 # Font of text
 def text_objects(text, font):
-    textSurface = font.render(text, True, white)
+    textSurface = font.render(text, True, s.white)
     return textSurface, textSurface.get_rect()
 
 
@@ -64,7 +66,6 @@ def button(message, x, y, w, h, ic, ac, action=None):  # x,y = coord. w=width, h
                 s.MASS[4] = 5.685e26
                 s.G = 6.674e-20
                 s.TIME_STEP = 3600 * 24
-                
                 parameter_loop()
      # if the mouse isn't in a rectangle, the color will change
     else:
@@ -86,9 +87,9 @@ def parameter_loop():
                 p.quit()
                 quit()
 
-        screen.fill(grey)
-        button('Auto Launch', s.WIDTH/2 - 100, s.HEIGHT/2 -100, 200, 50, green, bright_green, 'launch')
-        button('Manual Launch', s.WIDTH/2 - 100, s.HEIGHT/2, 200, 50, green, bright_green)
+        screen.fill(s.grey)
+        button('Auto Launch', s.WIDTH/2 - 100, s.HEIGHT/2 -100, 200, 50, s.green, s.bright_green, 'launch')
+        button('Manual Launch', s.WIDTH/2 - 100, s.HEIGHT/2, 200, 50, s.green, s.bright_green)
 
         p.display.update()
 
@@ -117,16 +118,16 @@ class InputBox:
             if self.active:
                 # Define which box_input is selected (mass of spaceship)
                 """if event.key == p.K_RETURN and 450 + 140 > mouse[0] > 450 and 100 + 32 > mouse[1] > 100:
-                    self.color = lime
+                    self.color = s.lime
                     s.spaceship = float(self.text)
                     print(s.spaceship)
                     
                 if event.key == p.K_RETURN and 450 + 140 > mouse[0] > 450 and 160 + 32 > mouse[1] > 160:
-                    self.color = lime
+                    self.color = s.lime
                     s.spaceship = float(self.text)
                     print(s.ss_acc)"""
-                    
-               if event.key == p.K_RETURN and 450 + 300 > mouse[0] > 450 and 220 + 32 > mouse[1] > 220:
+            
+                if event.key == p.K_RETURN and 450 + 300 > mouse[0] > 450 and 220 + 32 > mouse[1] > 220:
                     self.color = s.lime
                     s.MASS[0] = float(self.text)
                     print(s.MASS[0])
@@ -169,6 +170,7 @@ class InputBox:
                     self.text = self.text
                 else:
                     self.text += event.unicode
+                    
                 # Re-render the text.
                 self.txt_surface = FONT.render(self.text, True, self.color)
                 # convert text_input to float float(text)
@@ -184,8 +186,8 @@ class InputBox:
         # Blit the rectangle
         p.draw.rect(screen, self.color, self.rect, 2)
         # Blit Default_Setting and Retrun buttons
-        button('Default Setting', s.WIDTH/2 - 220, 650, 200, 50, yellow_launch, bright_yellow_launch, 'Default')
-        button('Return', s.WIDTH/2 + 40, 650, 200, 50, yellow_launch, bright_yellow_launch, 'return')
+        button('Default Setting', s.WIDTH/2 - 220, 650, 200, 50, s.yellow_launch, s.bright_yellow_launch, 'Default')
+        button('Return', s.WIDTH/2 + 40, 650, 200, 50, s.yellow_launch, s.bright_yellow_launch, 'return')
 
 #create InputsBoxes and possibility to change some variables
 def main():
@@ -264,8 +266,8 @@ def game_intro():
         TextRect.center = ((s.WIDTH/2), (s.HEIGHT/2))
         screen.blit(TextSurf, TextRect)
 
-        button('setting', s.WIDTH/3 + 75, 460, 100, 50, yellow, bright_yellow, 'setting')
-        button('start', s.WIDTH/3 - 50, 460, 100, 50, green, bright_green, 'play')
-        button('quit', s.WIDTH/3 + 200, 460, 100, 50, red, bright_red, 'quit')
+        button('setting', s.WIDTH/3 + 75, 460, 100, 50, s.yellow, s.bright_yellow, 'setting')
+        button('start', s.WIDTH/3 - 50, 460, 100, 50, s.green, s.bright_green, 'play')
+        button('quit', s.WIDTH/3 + 200, 460, 100, 50, s.red, s.bright_red, 'quit')
 
         pygame.display.update()
