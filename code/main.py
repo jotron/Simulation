@@ -18,8 +18,11 @@ MAINFONT = p.font.Font("assets/font.ttf", 20)
 
 # Class for all objects with mass
 class Space_object:
+    # Alle Klasseninstanzen in array abspeichern
     space_objects = []
+    # Bei jedem Frame wird step_accumulation grösser, wenn genug gross, wird gerechnet
     step_accumulation = 0.0
+    # Planet im Mittelpunkt
     center_index = 0
 
     def __init__(self, screen, pos, mass, img,
@@ -50,7 +53,7 @@ class Space_object:
 
     # Draw Space Object
     def draw(self):
-        # store position for one year
+        # Trace_accumulation wird grösser bis es sich lohnt einen neuen Punkt abzuspeichern
         self.trace_accumulation += s.SPEED_FACTORS[s.SPEED_INDEX] / s.FRAMERATE
         trace_step = (self.trace_time) / self.trace_length
         for i in range(int(self.trace_accumulation / trace_step)):
@@ -59,6 +62,7 @@ class Space_object:
         self.trace_accumulation = self.trace_accumulation % trace_step
 
         # draw trace
+        # Spur wird in einem "rotierenden array" gespeichert
         rolled_trace = np.roll(self.trace, -self.trace_index, 0)
         trace_list = self.convert(rolled_trace).tolist()
         p.draw.aalines(self.screen, self.trace_color, False, trace_list, 1)
@@ -161,7 +165,6 @@ class Space_object:
     def convert(self, pos):
         # Am Anfang ist die Sonne im Zenter bzw. die Anfangskoordinate der Sonne
         center_pos = self.space_objects[s.CENTER_INDEX].pos
-        sun_pos = self.space_objects[0].pos
         # Alles zum Ursprung Sonne verschieben und dann skalieren
         resourced_pos = (pos - center_pos) * s.ZOOM_FACTOR
         # Zurückverschieben
