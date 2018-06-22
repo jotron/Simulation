@@ -56,10 +56,14 @@ Als letzter Schritt wurde der ganze Programmcode nochmals sorgfältig überarbei
 \end{figure}
 \subsection{Simulation des Sonnensystems}
 Aktuell kann das Programm erfolgreich das Sonnensystem mit ausgewählten Planeten simulieren. Simuliert werden Erde, Mars, Jupiter und Saturn. Die Anfangsbedingungen stimmen sehr genau mit dem Sonnensystem überein.
+
+Es sind aktuell zwei Versionen des Programms vorhanden (auf zwei \textit{Git branches}). In der 'alten' Version sind die Planeten mit Bildern dargestellt. In der neuen Version werden sie hingegen als einfache Kreise gezeichnet. Das ermöglicht korrekte Masse, was für die kleine Grösse der Raumsonde unabdingbar ist.
 \subsubsection{Implementation des \textit{Runge-Kutta }Verfahrens}
 Das \textit{Runge-Kutta} Verfahren wird lediglich einmal, jedoch gleich für alle Planeten durchgeführt. Das liegt daran, dass bei einem Schritt auch die neuen Positionen der anderen Planeten berücksichtigt werden müssen.
 
-In der DGL werden zuerst alle Beschleunigungen addiert, die auf einen Körper wirken.
+Die Koordinaten sind nicht relativ zur Sonne sondern absolut. Wir setzten einfach alle Körper auf bestimmte Startpositionen. Als DGL verwenden wir also: $$ m_1 \cdot \vec{a_1} = G \frac{m_1 \cdot m_2}{r^3} \cdot  \vec{r}$$
+
+In der DGL werden zuerst alle Beschleunigungen addiert, die auf einen Körper wirken und erst anschliessend das \textit{Runge-Kutta} vollführt.
 \subsection{Interface}
 \subsubsection{Menu}
 Ein Menu wurde ebenfalls implementiert. Allerdings hat es noch einige kleine, versteckte Fehler. Es gibt momentan schon viele Knöpfe, aber einige sind noch ohne Funktion. Später soll man dann zwischen den Modi wechseln können und Konstanten ändern.
@@ -68,7 +72,10 @@ Ein Zoom war wichtig für die Raumsonde. Ohne Zoom wäre es unmöglich, die Sond
 
 \textit{p} vergrössert und \textit{m} verkleinert
 \subsubsection{Geschwindigkeit}
-Der Geschwindigkeitsfaktor wird realistisch angezeigt. Das Spulen nach vorne war ebenfalls nötig, um bei langsamer Geschwindigkeit die Sonde zu steuern, und dann bei schneller Geschwindigkeit Resultate zu sehen.
+Die Zeit, FPS und $\Delta t$ sind harmonisch veränderbar. Man kann die Simulation mit verkleinern des $\Delta t$ fast beliebig 
+genau rechnen lassen und mit erhöhen der FPS flüssiger animieren.
+
+Der Geschwindigkeitsfaktor wird realistisch angezeigt. Das Spulen nach vorne war nötig, um bei langsamer Geschwindigkeit die Sonde zu steuern, und dann bei schneller Geschwindigkeit Resultate zu sehen.
 
 \textit{arrow up} beschleunigt und \textit{arrow down} verlangsamt.
 
