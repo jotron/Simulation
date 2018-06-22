@@ -27,7 +27,7 @@ STARTVEL = [np.array([0, 0]),      # Sun
             np.array([29.29, 0]),  # Earth 29.29
             np.array([21.97, 0]),  # Mars
             np.array([12.45, 0]),  # Jupyter
-            np.array([9.11, 0])]    # Saturn
+            np.array([9.11, 0])]   # Saturn
 MASS = [2e30, 5.974e24, 6.419e23, 1.9e27, 5.685e26]
 OBJECT_IMG = [p.image.load('assets/sun.png'),
               p.image.load('assets/earth.png'),
@@ -40,10 +40,12 @@ COLOR = [(255, 255, 0),    # Sun = Yellow
          (153, 102, 51),   # Jupyter = Brown
          (140, 140, 140)]  # Saturn = Grey
 RADIUS = [695700.0, 6378.0, 3396.0, 69911.0, 60268.0]
-TRACE_LENGTH = [5, 50, 50, 150, 150]
-TRACE_TIME = [24*3600*365*29.5, 24*3600*365, 24*3600*687, 24*3600*365*11.8, 24*3600*365*29.5]
+TRACE_LENGTH = [100, 50, 50, 150, 150]
+TRACE_TIME = [24*3600*50, 24*3600*365, 24*3600*687, 24*3600*365*11.8, 24*3600*365*29.5]
 
 # COLORS
+c_i = p.Color('lightskyblue3')
+c_a = p.Color('dodgerblue2')
 black = (0, 0, 0)
 grey = (50, 131, 134)
 white = (255, 255, 255)
@@ -58,3 +60,5 @@ yellow_launch = (245, 222, 179)
 bright_yellow_launch = (255, 235, 205)
 lime = (0, 255, 0)
 grey = (30, 30, 30)
+blue_s = (63, 124, 165)
+b_blue_s = (67, 132, 176)
