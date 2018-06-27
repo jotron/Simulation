@@ -64,17 +64,20 @@ class Space_object:
         rolled_trace = np.roll(self.trace, -self.trace_index, 0)
         trace_list = self.convert(rolled_trace).tolist()
         p.draw.aalines(self.screen, self.trace_color, False, trace_list, 1)
+           
+        if self.radius > np.norm(space_objects[center_index].pos - self.pos) - V_width or  0 <= self.pos[0] <= 3.5 * 10**9 * s.ZOOM_FACTOR and 0 <= self.pos[1] <= 3.5 * 10**9 * s.ZOOM_FACTOR: 
+            # draw shape
+            rad = int(round(self.radius * s.ZOOM_FACTOR / s.V_WIDTH * s.WIDTH))
+            rad = max(rad, 3)
+            pos = self.convert(self.pos).tolist()
+            self.rect = p.draw.circle(self.screen, self.color,
+                                    pos, rad)
 
-        # draw shape
-        rad = int(round(self.radius * s.ZOOM_FACTOR / s.V_WIDTH * s.WIDTH))
-        rad = max(rad, 3)
-        pos = self.convert(self.pos).tolist()
-        self.rect = p.draw.circle(self.screen, self.color,
-                                  pos, rad)
-
-        # Draw name of planet
-        texpos = (pos[0] + 5, pos[1] - 5)
-        screen.blit(self.name, texpos)
+            # Draw name of planet
+            texpos = (pos[0] + 5, pos[1] - 5)
+            screen.blit(self.name, texpos)
+        else:
+            None
 
     # Get next position and velocity
     @classmethod
