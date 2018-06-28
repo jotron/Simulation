@@ -8,7 +8,7 @@ FRAMERATE = 30
 
 # GENERAL SIMULATION
 G = 6.674e-20
-TIME_STEP = 3600 * 24
+TIME_STEP = 3600 * 2
 V_SIZE = V_WIDTH, V_HEIGHT = 3.5e9, 3.5e9  # Total size of System = 3e9km
 SPEED_FACTORS = [1, 1e3, 1e4, 1e5, 1.5e5, 3e5, 5e5, 7e5, 1e6, 5e6, 1e7,
                  2e7, 5e7, 1e8]
@@ -16,6 +16,12 @@ SPEED_INDEX = 1
 ZOOM_FACTOR = 1.0
 CENTER_INDEX = 0
 v_center = np.array([V_WIDTH/2, V_HEIGHT/2])
+
+# Space shuttle Constants
+ss_f = 1350e-4  # in KN 1350
+ss_m = 1500  # in Kg
+ss_img = p.image.load('assets/rocket_neutral.png')
+ss_length = 15
 
 # Space_object Constants
 STARTPOS = [v_center,                             # Sun
@@ -44,8 +50,8 @@ COLOR = [(255, 255, 0),    # Sun = Yellow
 NAME = ["Sonne", "Erde", "Mars", "Jupiter", "Saturn"]
 
 RADIUS = [695700.0, 6378.0, 3396.0, 69911.0, 60268.0]
-TRACE_LENGTH = [100, 50, 50, 150, 150]
-TRACE_TIME = [ 24*3600*365*5, 24*3600*365, 24*3600*687, 24*3600*365*11.8, 24*3600*365*29.5]
+TRACE_LENGTH = [100, 100, 50, 150, 150]
+TRACE_TIME = [24*3600*365*5, 24*3600*365, 24*3600*687, 24*3600*365*11.8, 24*3600*365*29.5]
 
 # COLORS
 c_i = p.Color('lightskyblue3')

@@ -23,16 +23,13 @@ class Space_object:
     step_accumulation = 0.0
     center_index = 0
 
-    def __init__(self, screen, name, pos, mass, radius, color,
+    def __init__(self, screen, pos, mass,
                  vel=np.zeros(2),
                  trace_color=(180, 180, 180),
                  trace_length=100, trace_time=3600*24*365):
+
         self.screen = screen
         self.pos = pos
-        self.radius = radius
-        self.color = color
-        self.rect = None
-        self.name = obj_font.render(name, 1, (0, 255, 255))
         self.mass = mass
         self.vel = vel
 
@@ -50,32 +47,6 @@ class Space_object:
         self.pos = pos
         self.vel = vel
 
-    # Draw Space Object
-    def draw(self):
-        # store position for one year
-        self.trace_accumulation += s.SPEED_FACTORS[s.SPEED_INDEX] / s.FRAMERATE
-        trace_step = (self.trace_time) / self.trace_length
-        for i in range(int(self.trace_accumulation / trace_step)):
-            self.trace[self.trace_index % self.trace_length] = self.pos
-            self.trace_index += 1
-        self.trace_accumulation = self.trace_accumulation % trace_step
-
-        # draw trace
-        rolled_trace = np.roll(self.trace, -self.trace_index, 0)
-        trace_list = self.convert(rolled_trace).tolist()
-        p.draw.aalines(self.screen, self.trace_color, False, trace_list, 1)
-
-        # draw shape
-        rad = int(round(self.radius * s.ZOOM_FACTOR / s.V_WIDTH * s.WIDTH))
-        rad = max(rad, 3)
-        pos = self.convert(self.pos).tolist()
-        self.rect = p.draw.circle(self.screen, self.color,
-                                  pos, rad)
-
-        # Draw name of planet
-        texpos = (pos[0] + 5, pos[1] - 5)
-        screen.blit(self.name, texpos)
-
     # Get next position and velocity
     @classmethod
     def get_next_state(cls, AWP, dt):
@@ -84,6 +55,10 @@ class Space_object:
         def DGL(pos):
             G = s.G  # in km
             a = np.zeros_like(pos)
+
+            # rocket
+            if space_shuttle.on:
+                a[-1] += space_shuttle.get_acc()
 
             for i in range(0, len(pos)):
                 for j in range(i+1, len(pos)):
@@ -97,6 +72,8 @@ class Space_object:
                     # Acceleration on soi and soj
                     a[i] += Fij / mi
                     a[j] -= Fij / mj
+
+            print(a[-1], space_shuttle.get_acc())
             return a
 
         # # # # # # # #
@@ -150,13 +127,30 @@ class Space_object:
     @classmethod
     def draw_all(cls):
         for space_object1 in cls.space_objects:
+            # # # # #
+            # TRACE #
+            # # # # #
+
+            # store position for one year
+            space_object1.trace_accumulation += s.SPEED_FACTORS[s.SPEED_INDEX] / s.FRAMERATE
+            trace_step = (space_object1.trace_time) / space_object1.trace_length
+            for i in range(int(space_object1.trace_accumulation / trace_step)):
+                space_object1.trace[space_object1.trace_index % space_object1.trace_length] = space_object1.pos
+                space_object1.trace_index += 1
+            space_object1.trace_accumulation = space_object1.trace_accumulation % trace_step
+
+            # draw trace
+            rolled_trace = np.roll(space_object1.trace, -space_object1.trace_index, 0)
+            trace_list = space_object1.convert(rolled_trace).tolist()
+            p.draw.aalines(space_object1.screen, space_object1.trace_color, False, trace_list, 1)
+
             space_object1.draw()
 
     # Change center point
     @classmethod
     def centerclick(cls, click):
         for i, so in enumerate(Space_object.space_objects):
-            #rect = so.img.get_rect(center=Space_object.convert(so.pos))
+            # rect = so.img.get_rect(center=Space_object.convert(so.pos))
             rect = so.rect
             if rect.collidepoint(click):
                 s.CENTER_INDEX = i
@@ -166,12 +160,93 @@ class Space_object:
     def convert(self, pos):
         # Am Anfang ist die Sonne im Zenter bzw. die Anfangskoordinate der Sonne
         center_pos = self.space_objects[s.CENTER_INDEX].pos
-        sun_pos = self.space_objects[0].pos
         # Alles zum Ursprung Sonne verschieben und dann skalieren
         resourced_pos = (pos - center_pos) * s.ZOOM_FACTOR
         # Zurückverschieben
         tmp_pos = (resourced_pos + s.v_center) / s.V_SIZE * s.SIZE
         return tmp_pos.round().astype(int)
+
+
+# Class for Spaceship
+class space_shuttle_class(Space_object):
+    def __init__(self, screen, earth_index, mass, force, img,
+                 ss_factor=(1/7)):
+        # init space_object
+        Space_object.__init__(self, screen, self.initpos(earth_index),
+                              mass, self.initvel(earth_index),
+                              trace_time=24*3600*400,
+                              trace_length=500)
+
+        # specific space shuttle properties
+        self.rect = None
+        self.a = force / mass
+        self.theta = 0
+        self.on = False
+
+        # smallet image of space_shuttle
+        size = img.get_size()
+        self.img_original = p.transform.scale(img, (int(size[0] * ss_factor),
+                                              int(size[1] * ss_factor)))
+        self.img = self.img_original
+
+    def initpos(self, earth_index):
+        e = Space_object.space_objects[earth_index]
+        pos = e.pos + np.array([0, -42164])
+        return pos
+
+    def initvel(self, earth_index):
+        e = Space_object.space_objects[earth_index]
+        return e.vel + np.array([3.074, 0])
+
+    def draw(self):
+        self.rect = self.img.get_rect(center=self.convert(self.pos).tolist())
+        self.screen.blit(self.img, self.rect)
+
+    def get_acc(self):
+        acc = np.array([0, -self.a])
+        cos, sin = np.cos(self.theta), np.sin(self.theta)
+        rotation_matrix = np.array([[cos, -sin], [sin, cos]])
+        return np.dot(rotation_matrix, acc)
+
+    def rotate(self, right):
+        angle_rad = np.pi / 10.
+        if right:
+            self.theta += angle_rad
+        else:
+            self.theta -= angle_rad
+        theta_degree = self.theta * (180.0 / np.pi)
+        self.img = p.transform.rotate(self.img_original, -theta_degree)
+
+
+class planet(Space_object):
+    def __init__(self, screen, name, pos, mass, radius, color,
+                 vel=np.zeros(2),
+                 trace_color=(180, 180, 180),
+                 trace_length=100, trace_time=3600*24*365):
+
+        Space_object.__init__(self, screen, pos, mass,
+                              vel,
+                              trace_color,
+                              trace_length,
+                              trace_time)
+
+        # specific planet properties
+        self.rect = None
+        self.radius = radius
+        self.color = color
+        self.name = obj_font.render(name, 1, (0, 255, 255))
+
+    def draw(self):
+        # draw shape
+        rad = int(round(self.radius * s.ZOOM_FACTOR / s.V_WIDTH * s.WIDTH))
+        rad = max(rad, 3)
+        pos = self.convert(self.pos).tolist()
+        self.rect = p.draw.circle(self.screen, self.color,
+                                  pos, rad)
+
+        # Draw name of planet
+        texpos = (pos[0] + 5, pos[1] - 5)
+        screen.blit(self.name, texpos)
 
 
 # ANIMATION LOOP #
@@ -196,6 +271,21 @@ def animation_loop():
                 if (event.key == p.K_m and s.ZOOM_FACTOR >= 0.2):
                     s.ZOOM_FACTOR /= 2
 
+                # Space shuttle off
+                if (event.key == p.K_SPACE):
+                    space_shuttle.on = False
+
+                # Change direction of Space Shuttle
+                if (event.key == p.K_RIGHT):
+                    space_shuttle.rotate(True)
+                if (event.key == p.K_LEFT):
+                    space_shuttle.rotate(False)
+
+            # Space Shuttle on
+            if event.type == p.KEYDOWN:
+                if (event.key == p.K_SPACE):
+                    space_shuttle.on = True
+
             # Change view center
             if event.type == p.MOUSEBUTTONDOWN:
                 Space_object.centerclick(event.pos)
@@ -207,6 +297,8 @@ def animation_loop():
         Space_object.run_all()
         Space_object.draw_all()
 
+        space_shuttle.draw()
+
         # Speed and Zoom
         SPEEDLABEL = MAINFONT.render("X {}".format(s.SPEED_FACTORS[s.SPEED_INDEX]),
                                      1, (0, 255, 255))
@@ -215,20 +307,31 @@ def animation_loop():
         screen.blit(SPEEDLABEL, (10, 20))
         screen.blit(ZOOMLABEL, (10, 40))
 
+        ROCKET = MAINFONT.render("R {}, {}".format(space_shuttle.on,
+                                 space_shuttle.theta * (180.0 / np.pi)),
+                                 1, (0, 255, 255))
+        screen.blit(ROCKET, (600, 20))
+
         p.display.update()
         clock.tick(s.FRAMERATE)
 
 
 # Initialize class instances
-def init_simulation(ss=s):
+def init_simulation(settings_menu=s):
     # Change variable constans
     global s
-    s = ss
+    s = settings_menu
 
     for i in range(len(s.STARTPOS)):  # len(s.STARTPOS)
-        Space_object(screen, s.NAME[i], s.STARTPOS[i], s.MASS[i], s.RADIUS[i],
-                     s.COLOR[i], s.STARTVEL[i], trace_length=s.TRACE_LENGTH[i],
-                     trace_time=s.TRACE_TIME[i])
+        planet(screen, s.NAME[i], s.STARTPOS[i], s.MASS[i], s.RADIUS[i],
+               s.COLOR[i],
+               s.STARTVEL[i],
+               (180, 180, 180),
+               s.TRACE_LENGTH[i],
+               s.TRACE_TIME[i])
+
+    global space_shuttle
+    space_shuttle = space_shuttle_class(screen, 1, s.ss_m, s.ss_f, s.ss_img)
     animation_loop()
 
 
