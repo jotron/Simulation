@@ -39,7 +39,7 @@ def game():
 
 def credit():
 
-    credit_list = ["The Simulation"," ","Directed by:","Herr Kambor and Herr Keller","", "Created by:","","Amin","Joel","Simon","","","","","","","","You wait until the end nice","Wait a bit..","","ps: It's possible to quit the programme"]
+    credit_list = ["The Simulation"," ","Directed by:","Herr Kambor and Herr Keller","", "Created by:","","Amin","Joel","Simon","","","","","","","","You wait until the end nice","Wait a bit..","","","","","","ps: It's possible to quit the programme"]
     texts = []
     # Render the text
     for i, line in enumerate(credit_list):
