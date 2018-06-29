@@ -1,5 +1,6 @@
 import settings as s
 import pygame
+import credit as c
 import time
 import sys
 pygame.init()
@@ -63,6 +64,8 @@ def button(message, x, y, w, h, ic, ac, action=None):
                 quit()
             elif action == "setting":
                 main()
+            elif action == "credit":
+                c.credit()
             elif action == "return":
                 game_intro()
             elif action == "Default":
@@ -281,6 +284,7 @@ def game_intro():
         TextRect.center = ((s.WIDTH/2), (s.HEIGHT/2))
         screen.blit(TextSurf, TextRect)
 
+        button('credits', s.WIDTH/3 + 75, 520, 100, 50, s.dark_pink, s.pink, 'credit')
         button('setting', s.WIDTH/3 + 75, 460, 100, 50, s.yellow, s.bright_yellow, 'setting')
         button('start', s.WIDTH/3 - 50, 460, 100, 50, s.green, s.bright_green, 'play')
         button('quit', s.WIDTH/3 + 200, 460, 100, 50, s.red, s.bright_red, 'quit')
