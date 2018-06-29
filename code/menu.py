@@ -1,6 +1,7 @@
 import settings as s
 import pygame
 import time
+import sys
 pygame.init()
 
 p = None
@@ -33,8 +34,12 @@ def message_screen(text, text_size, widht, height):
     screen.blit(TextSurf, TextRect)
 
     p.display.update()
-
-
+def space_text( x, y, w, h, i):
+    mouse = p.mouse.get_pos()
+    if x + w > mouse[0] > x and y + h > mouse[1] > y:
+            s.CENTER_INDEX = i
+        
+        
 # Define an action if a button is pressed
 # x,y = coord. w=width, h= height, ic=inactive color ac=active color
 def button(message, x, y, w, h, ic, ac, action=None):
@@ -51,6 +56,8 @@ def button(message, x, y, w, h, ic, ac, action=None):
                 parameter_loop()
             elif action == "launch":
                 init_simulation(s)
+            elif action == "exit":        
+                sys.exit()
             elif action == "quit":
                 p.quit()
                 quit()
@@ -171,6 +178,7 @@ class InputBox:
                     print(s.MASS[4])
                     
                 elif event.key == p.K_BACKSPACE:
+                    
                     main()
                 elif event.key == p.K_COMMA:
                     self.text = self.text
