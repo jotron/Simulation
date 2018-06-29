@@ -14,6 +14,7 @@ clock = p.time.Clock()  # Brauchen wir zur Framerate-Kontrolle
 # background_image
 background_image = p.image.load("assets/background.jpg").convert()
 MAINFONT = p.font.Font("assets/font.ttf", 20)
+SECFONT = p.font.Font("assets/font.ttf", 17)
 
 
 # Class for all objects with mass
@@ -53,7 +54,7 @@ class Space_object:
 
     # Draw Space Object
     def draw(self):
-        # Trace_accumulation wird grösser bis es sich lohnt einen neuen Punkt abzuspeichern
+        #Trace_accumulation wird grösser bis es sich lohnt einen neuen Punkt abzuspeichern
         self.trace_accumulation += s.SPEED_FACTORS[s.SPEED_INDEX] / s.FRAMERATE
         trace_step = (self.trace_time) / self.trace_length
         for i in range(int(self.trace_accumulation / trace_step)):
@@ -173,15 +174,22 @@ class Space_object:
 
 
 # ANIMATION LOOP #
+"""mouse_c = p.mouse.get_pressed()
+if mouse_c:
+    mouse_c == True
+else:
+    mouse_c == False
+mouse_c == False"""
 def animation_loop():
     while 1:
         for event in p.event.get():
             # QUIT
-            if event.type == p.QUIT or (event.type == p.KEYDOWN and event.key == p.K_ESCAPE):
+            if event.type == p.QUIT or (event.type == p.KEYDOWN and event.key == p.K_ESCAPE): 
                 sys.exit()
+            """elif mouse_c == True and (0+20 > menu.mouse[0] > 0 and 0+20 > menu.mouse[1] > 0):
+                break"""
             # SET SPEED
             if event.type == p.KEYUP:
-
                 # Increase and Decrease Speed
                 if (event.key == p.K_UP and s.SPEED_INDEX < len(s.SPEED_FACTORS) - 1):
                     s.SPEED_INDEX += 1
@@ -189,7 +197,7 @@ def animation_loop():
                     s.SPEED_INDEX -= 1
 
                 # Increase Zoom factor => press shift and 1 simultaneously
-                if (event.key == p.K_p and s.ZOOM_FACTOR <= 10):
+                if (event.key == p.K_p and s.ZOOM_FACTOR < 64):
                     s.ZOOM_FACTOR *= 2
                 if (event.key == p.K_m and s.ZOOM_FACTOR >= 0.2):
                     s.ZOOM_FACTOR /= 2
@@ -205,14 +213,33 @@ def animation_loop():
         Space_object.run_all()
         Space_object.draw_all()
 
-        # Speed and Zoom
+        # Speed, Zoom and Planets focus
+        menu.button('x', 0, 0, 20, 20, s.yellow, s.yellow ,'exit')
         SPEEDLABEL = MAINFONT.render("X {}".format(s.SPEED_FACTORS[s.SPEED_INDEX]),
                                      1, (0, 255, 255))
         ZOOMLABEL = MAINFONT.render("X {}".format(s.ZOOM_FACTOR),
                                     1, (0, 255, 255))
+        SUNLABEL = SECFONT.render("Sun", 1, (0, 255, 255))
+        EARTHLABEL = SECFONT.render("Earth", 1, (0, 255, 255))
+        MOONLABEL = SECFONT.render("Moon", 1, (0, 255, 255))
+        MARSLABEL = SECFONT.render("Mars", 1, (0, 255, 255))
+        JUPYTERLABEL = SECFONT.render("Jupyter", 1, (0, 255, 255))
+        SATURNLABEL = SECFONT.render("Saturn", 1, (0, 255, 255))
+        
         screen.blit(SPEEDLABEL, (10, 20))
         screen.blit(ZOOMLABEL, (10, 40))
-
+        screen.blit(SUNLABEL, (700,10))
+        screen.blit(EARTHLABEL, (700,30))
+        screen.blit(MOONLABEL, (700,50))
+        screen.blit(MARSLABEL, (700,70))
+        screen.blit(JUPYTERLABEL, (700,90))
+        screen.blit(SATURNLABEL, (700,110))
+        menu.space_text(700, 10, 100, 20, 0) #Sun
+        menu.space_text(700, 30, 100, 20, 1) #Earth
+        menu.space_text(700, 50, 100, 20, 2) #Moon of Earth
+        menu.space_text(700, 70, 100, 20, 3) #Mars
+        menu.space_text(700, 90, 100, 20, 4) #Jupyter
+        menu.space_text(700, 110, 100, 20, 5) #Saturn
         p.display.update()
         clock.tick(s.FRAMERATE)
 
